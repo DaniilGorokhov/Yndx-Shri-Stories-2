@@ -7,13 +7,17 @@ function userHandler(user) {
     avatar: user.avatar,
   };
 
-  users.set(processedUser.id, processedUser);
+  if (!users.has(user.id)) {
+    users.set(processedUser.id, processedUser);
+  }
 
   for (let friendIx = 0; friendIx < user.friends.length; friendIx += 1) {
     if (typeof user.friends[friendIx] === 'object') {
       userHandler(user.friends[friendIx]);
     }
   }
+
+  // TODO handling optional properties commits and comments
 
   return processedUser.id;
 }

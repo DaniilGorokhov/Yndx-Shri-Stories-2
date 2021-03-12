@@ -1,5 +1,7 @@
 const { users, userHandler } = require('../userHandler');
 
+const { getTestUser } = require('../../helpers/getTestUser');
+
 afterEach(() => {
   users.forEach((value, key) => {
     users.delete(key);
@@ -7,24 +9,6 @@ afterEach(() => {
 });
 
 describe('userHandler tests', () => {
-  function getTestUser({ startId = 1, friendsQuantity = 0, friendsIndexes = [] } = {}) {
-    const friends = [];
-    for (let friendIx = 0; friendIx < friendsQuantity; friendIx += 1) {
-      const newStartId = friendsIndexes[friendIx] || startId + friendIx + 1;
-      friends.push(getTestUser({ startId: newStartId }));
-    }
-
-    const user = {
-      id: startId,
-      name: `test username${startId}`,
-      login: `testlogin${startId}`,
-      avatar: `${startId}.jpg`,
-      friends,
-    };
-
-    return user;
-  }
-
   describe('handler returning', () => {
     test('type of user.id is a number', () => {
       const user = getTestUser();
@@ -117,6 +101,16 @@ describe('userHandler tests', () => {
       userHandler(user);
       expect(users.size).toBe(1);
     });
+
+    test('do not rewrite user if pass one user twice', () => {
+      const user = getTestUser();
+
+      userHandler(user);
+
+      user.name = 'test username2';
+      userHandler(user);
+      expect(users.get(user.id).name).toBe('test username1');
+    });
   });
 
   describe('friends handling', () => {
@@ -128,15 +122,18 @@ describe('userHandler tests', () => {
     });
 
     test('ignore friends item if it is user.id', () => {
-      const user = getTestUser({ startId: 1, friendsQuantity: 2 });
-      user.friends.push(15);
-      user.friends.push(1);
-      user.friends.push(3);
+      const user = getTestUser({
+        startId: 1,
+        friendsQuantity: 2,
+        friendsIndexes: [
+          { id: 15, userAsId: true },
+          { id: 1, userAsId: true },
+          { id: 3, userAsId: true },
+        ],
+      });
 
       userHandler(user);
-      expect(users.size).toBe(3);
+      expect(users.size).toBe(1);
     });
   });
 });
-
-// TODO do not rewrite user if pass one user twice
