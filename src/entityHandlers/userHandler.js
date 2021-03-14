@@ -17,8 +17,6 @@ function userHandler(user) {
     }
   }
 
-  // TODO handling optional properties commits and comments
-
   return processedUser.id;
 }
 

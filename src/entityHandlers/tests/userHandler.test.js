@@ -1,6 +1,6 @@
 const { users, userHandler } = require('../userHandler');
 
-const { getTestUser } = require('../../helpers/getTestUser');
+const { getTestUser } = require('../../helpers/generators/getTestUser');
 
 afterEach(() => {
   users.forEach((value, key) => {
@@ -24,14 +24,14 @@ describe('userHandler tests', () => {
   });
 
   describe('handler saving', () => {
-    test('user has saved', () => {
+    test('save user in users map', () => {
       const user = getTestUser();
 
       userHandler(user);
       expect(users.size).toBe(1);
     });
 
-    test('passed user object did not change', () => {
+    test('do not change passed user object', () => {
       const user = getTestUser();
       const userCopy = Object.assign(user);
 
@@ -39,7 +39,7 @@ describe('userHandler tests', () => {
       expect(user).toBe(userCopy);
     });
 
-    test('login property did not save', () => {
+    test('do not save login property', () => {
       const user = getTestUser();
 
       userHandler(user);
@@ -71,7 +71,7 @@ describe('userHandler tests', () => {
       });
 
       test('saved user.name did not change', () => {
-        const user = getTestUser({ startId: 1 });
+        const user = getTestUser();
 
         userHandler(user);
         expect(users.get(user.id)).toHaveProperty('name', 'test username1');
@@ -87,7 +87,7 @@ describe('userHandler tests', () => {
       });
 
       test('saved user.avatar did not changed', () => {
-        const user = getTestUser({ startId: 1 });
+        const user = getTestUser({ userId: 1 });
 
         userHandler(user);
         expect(users.get(user.id)).toHaveProperty('avatar', '1.jpg');
@@ -115,7 +115,7 @@ describe('userHandler tests', () => {
 
   describe('friends handling', () => {
     test('save users from friends property', () => {
-      const user = getTestUser({ startId: 1, friendsQuantity: 2 });
+      const user = getTestUser({ userId: 1, friendsQuantity: 2 });
 
       userHandler(user);
       expect(users.size).toBe(3);
@@ -123,7 +123,7 @@ describe('userHandler tests', () => {
 
     test('ignore friends item if it is user.id', () => {
       const user = getTestUser({
-        startId: 1,
+        userId: 1,
         friendsQuantity: 2,
         friendsIndexes: [
           { id: 15, userAsId: true },

@@ -1,18 +1,28 @@
-const { userHandler } = require('./userHandler');
+const likes = new Map();
 
 function commentHandler(comment) {
+  let authorUserId;
   if (typeof comment.author === 'object') {
-    userHandler(comment.author);
+    authorUserId = comment.author.id;
+  } else {
+    authorUserId = comment.author;
   }
 
-  for (let likeIx = 0; likeIx < comment.likes.length; likeIx += 1) {
-    if (typeof comment.likes[likeIx] === 'object') {
-      userHandler(comment.likes[likeIx]);
-    }
+  const newLikesItem = {
+    timestamp: comment.createdAt,
+    quantity: comment.likes.length,
+  };
+  if (likes.has(authorUserId)) {
+    const userLikes = likes.get(authorUserId);
+    userLikes.push(newLikesItem);
+  } else {
+    const userLikes = [];
+    userLikes.push(newLikesItem);
+    likes.set(authorUserId, userLikes);
   }
-  // TODO create Map for likes
 }
 
 module.exports = {
+  likes,
   commentHandler,
 };
