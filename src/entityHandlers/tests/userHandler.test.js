@@ -33,10 +33,10 @@ describe('userHandler tests', () => {
 
     test('do not change passed user object', () => {
       const user = getTestUser();
-      const userCopy = Object.assign(user);
+      const userCopy = { ...user };
 
       userHandler(user);
-      expect(user).toBe(userCopy);
+      expect(user).toStrictEqual(userCopy);
     });
 
     test('do not save login property', () => {
@@ -110,30 +110,6 @@ describe('userHandler tests', () => {
       user.name = 'test username2';
       userHandler(user);
       expect(users.get(user.id).name).toBe('test username1');
-    });
-  });
-
-  describe('friends handling', () => {
-    test('save users from friends property', () => {
-      const user = getTestUser({ userId: 1, friendsQuantity: 2 });
-
-      userHandler(user);
-      expect(users.size).toBe(3);
-    });
-
-    test('ignore friends item if it is user.id', () => {
-      const user = getTestUser({
-        userId: 1,
-        friendsQuantity: 2,
-        friendsIndexes: [
-          { id: 15, userAsId: true },
-          { id: 1, userAsId: true },
-          { id: 3, userAsId: true },
-        ],
-      });
-
-      userHandler(user);
-      expect(users.size).toBe(1);
     });
   });
 });

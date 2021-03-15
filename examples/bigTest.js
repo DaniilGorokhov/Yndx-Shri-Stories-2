@@ -18,7 +18,12 @@ fs.writeFile('./examples/output.dev.json', resultAsString, (error) => {
 });
 
 // If there are difference, will be outputted error message
-const expectedVoteOutput = expectedOutput.find((item) => item.alias === 'vote');
-const receivedVoteOutput = result.find((item) => item.alias === 'vote');
+const expectedLeadersOutput = expectedOutput[0];
+const receivedLeadersOutput = result[0];
+
+assert.deepStrictEqual(expectedLeadersOutput, receivedLeadersOutput);
+
+const expectedVoteOutput = expectedOutput[1];
+const receivedVoteOutput = result[1];
 
 assert.deepStrictEqual(expectedVoteOutput, receivedVoteOutput);

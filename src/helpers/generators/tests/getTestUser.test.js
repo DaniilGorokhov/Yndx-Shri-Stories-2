@@ -1,5 +1,6 @@
 const { getTestUser } = require('../getTestUser');
 const { getTestComment } = require('../getTestComment');
+const { getTestCommit } = require('../getTestCommit');
 
 describe('getTestUser function tests', () => {
   test('return user object', () => {
@@ -90,5 +91,15 @@ describe('getTestUser function tests', () => {
 
     expect(user.comments).toHaveLength(1);
     expect(user.comments[0]).toStrictEqual(comment);
+  });
+
+  test('return user with commits as a array if they passed', () => {
+    const commits = [];
+    for (let commitIx = 0; commitIx < 5; commitIx += 1) {
+      commits.push(getTestCommit({ commitId: `${commitIx}11-x` }));
+    }
+    const user = getTestUser({ commits: true, commitsItems: commits });
+
+    expect(user.commits).toStrictEqual(commits);
   });
 });

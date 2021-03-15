@@ -1,13 +1,11 @@
 const { getVotesText } = require('./getVotesText');
 
 // this function wire user and they likes in active sprint
-function userLikes(users, likes, activeSprint) {
-  const { startAt, finishAt } = activeSprint;
-
+function userLikes(users, likes, { startAt, finishAt }) {
   const userLikesArray = [];
 
   users.forEach((user, userId) => {
-    const userCopy = Object.assign(user);
+    const userCopy = { ...user };
 
     const userLikesRaw = likes.get(userId);
 

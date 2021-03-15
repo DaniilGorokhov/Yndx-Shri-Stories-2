@@ -97,7 +97,7 @@ describe('userLikes function tests', () => {
   });
 
   test('return right data when several likes are ignored, '
-    + 'since their timestamps are strict more than activeSprint.finishAt', () => {
+    + 'since their timestamps are strict greater than activeSprint.finishAt', () => {
     const now = Date.now();
     const activeSprint = getTestSprint({ startAt: now - 100000, finishAt: now });
 
@@ -164,5 +164,61 @@ describe('userLikes function tests', () => {
         valueText: '0 голосов',
       },
     ]);
+  });
+
+  test('do not change passed users', () => {
+    const now = Date.now();
+    const activeSprint = getTestSprint({ startAt: now - 100000, finishAt: now });
+
+    const users = getHandledTestUsers({ userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] });
+
+    const likeItems = [];
+    for (let likeMultiplier = 0; likeMultiplier < 10; likeMultiplier += 1) {
+      likeItems.push([
+        {
+          timestamp: now - 10000,
+          quantity: 10 * likeMultiplier,
+        },
+      ]);
+    }
+    const likes = getHandledTestLikes({
+      userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      likeItems,
+    });
+
+    const usersCopy = new Map();
+    users.forEach((value, key) => usersCopy.set(key, value));
+
+    userLikes(users, likes, activeSprint);
+
+    expect(users).toStrictEqual(usersCopy);
+  });
+
+  test('do not change passed likes', () => {
+    const now = Date.now();
+    const activeSprint = getTestSprint({ startAt: now - 100000, finishAt: now });
+
+    const users = getHandledTestUsers({ userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] });
+
+    const likeItems = [];
+    for (let likeMultiplier = 0; likeMultiplier < 10; likeMultiplier += 1) {
+      likeItems.push([
+        {
+          timestamp: now - 10000,
+          quantity: 10 * likeMultiplier,
+        },
+      ]);
+    }
+    const likes = getHandledTestLikes({
+      userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      likeItems,
+    });
+
+    const likesCopy = new Map();
+    likes.forEach((value, key) => likesCopy.set(key, value));
+
+    userLikes(users, likes, activeSprint);
+
+    expect(likes).toStrictEqual(likesCopy);
   });
 });

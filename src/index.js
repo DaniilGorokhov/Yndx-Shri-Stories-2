@@ -1,18 +1,21 @@
 const { users, userHandler } = require('./entityHandlers/userHandler');
 const { likes, commentHandler } = require('./entityHandlers/commentHandler');
 const { sprints, sprintHandler } = require('./entityHandlers/sprintHandler');
-// const { commitHandler } = require('./entityHandlers/commitHandler');
+const { commits, commitHandler } = require('./entityHandlers/commitHandler');
 
 const { votePrepareData } = require('./slidesPrepareData/votePrepareData');
+const { leadersPrepareData } = require('./slidesPrepareData/leadersPrepareData');
 
 const { userLikes } = require('./helpers/dataHandlers/userLikes');
-const { sortUserLikesArray } = require('./helpers/dataHandlers/sortUserLikesArray');
+const { sortDescByValueText } = require('./helpers/dataHandlers/sortDescByValueText');
+const { userCommits } = require('./helpers/dataHandlers/userCommits');
 
 function prepareData(entities, { sprintId }) {
   for (let entityIx = 0; entityIx < entities.length; entityIx += 1) {
     const entity = entities[entityIx];
 
-    // currentEntities - linked list
+    // currentEntities - linked list.
+    // It is used to avoid handling nested entities by using recursion
     let currentEntities = { data: entity, next: null };
     let tail = currentEntities;
 
@@ -23,29 +26,10 @@ function prepareData(entities, { sprintId }) {
         case 'User':
           userHandler(currentEntity);
 
-          if (currentEntity.comments) {
-            for (let commentIx = 0; commentIx < currentEntity.comments.length; commentIx += 1) {
-              if (typeof currentEntity.comments[commentIx] === 'object') {
-                const newEntity = { data: currentEntity.comments[commentIx], next: null };
-                tail.next = newEntity;
-                tail = newEntity;
-              }
-            }
-          }
-          // TODO handling optional properties commits
-
           break;
         case 'Comment':
           if (typeof currentEntity.author === 'object') {
             userHandler(currentEntity.author);
-          }
-
-          for (let likeIx = 0; likeIx < currentEntity.likes.length; likeIx += 1) {
-            if (typeof currentEntity.likes[likeIx] === 'object') {
-              const newEntity = { data: currentEntity.likes[likeIx], next: null };
-              tail.next = newEntity;
-              tail = newEntity;
-            }
           }
 
           commentHandler(currentEntity);
@@ -56,7 +40,7 @@ function prepareData(entities, { sprintId }) {
             userHandler(currentEntity.author);
           }
 
-          // commitHandler(currentEntity);
+          commitHandler(currentEntity);
 
           break;
         case 'Issue':
@@ -64,36 +48,38 @@ function prepareData(entities, { sprintId }) {
             userHandler(currentEntity.resolvedBy);
           }
 
-          for (let commentIx = 0; commentIx < currentEntity.comments.length; commentIx += 1) {
-            if (typeof currentEntity.comments[commentIx] === 'object') {
-              const newEntity = { data: currentEntity.comments[commentIx], next: null };
-              tail.next = newEntity;
-              tail = newEntity;
-            }
-          }
-
           break;
         case 'Summary':
-          if (currentEntity.comments) {
-            for (let commentIx = 0; commentIx < currentEntity.comments.length; commentIx += 1) {
-              if (typeof currentEntity.comments[commentIx] === 'object') {
-                const newEntity = { data: currentEntity.comments[commentIx], next: null };
-                tail.next = newEntity;
-                tail = newEntity;
-              }
-            }
-          }
-
           break;
         case 'Sprint':
           sprintHandler(currentEntity);
 
           break;
         case 'Project':
-          // TODO Project handler
           break;
         default:
           throw new Error('error: type of entity is invalid');
+      }
+
+      // Here we check properties, which can contain nested entities
+      // like user.friends, that can contain other user entity.
+      // If they contain entity, it add to linked list and handling in further by cycle.
+      // It taken out, since else we should repeat same block for different properties.
+      const withNestedEntities = [
+        'friends', 'comments', 'commits', 'issues', 'dependencies', 'likes', 'summaries',
+      ];
+      // TODO summaries handling
+      for (let propertyIx = 0; propertyIx < withNestedEntities.length; propertyIx += 1) {
+        const property = withNestedEntities[propertyIx];
+        if (currentEntity[property]) {
+          for (let ix = 0; ix < currentEntity[property].length; ix += 1) {
+            if (typeof currentEntity[property][ix] === 'object') {
+              const newEntity = { data: currentEntity[property][ix], next: null };
+              tail.next = newEntity;
+              tail = newEntity;
+            }
+          }
+        }
       }
 
       currentEntities = currentEntities.next;
@@ -107,11 +93,16 @@ function prepareData(entities, { sprintId }) {
   }
 
   const userLikesArray = userLikes(users, likes, activeSprint);
-  sortUserLikesArray(userLikesArray);
+  sortDescByValueText(userLikesArray);
+
+  const userCommitsArray = userCommits(users, commits, activeSprint);
+  sortDescByValueText(userCommitsArray);
 
   const voteSlideData = votePrepareData(userLikesArray, activeSprint);
+  const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
 
   const slides = [
+    leadersSlideData,
     voteSlideData,
   ];
 

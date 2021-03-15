@@ -16,8 +16,7 @@ function commentHandler(comment) {
     const userLikes = likes.get(authorUserId);
     userLikes.push(newLikesItem);
   } else {
-    const userLikes = [];
-    userLikes.push(newLikesItem);
+    const userLikes = [newLikesItem];
     likes.set(authorUserId, userLikes);
   }
 }

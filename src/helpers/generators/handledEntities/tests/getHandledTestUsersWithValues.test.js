@@ -1,22 +1,22 @@
-const { getHandledTestUserLikes } = require('../getHandledTestUserLikes');
+const { getHandledTestUsersWithValues } = require('../getHandledTestUsersWithValues');
 
-describe('getHandledTestUserLikes function tests', () => {
+describe('getHandledTestUsersWithValues function tests', () => {
   test('return array', () => {
-    const handledUserLikesArray = getHandledTestUserLikes();
+    const handledUserLikesArray = getHandledTestUsersWithValues();
 
     expect(handledUserLikesArray).toBeInstanceOf(Array);
   });
 
   test('return new array with new objects each call', () => {
-    const handledUserLikesArray = getHandledTestUserLikes({ userIds: [1], valueTexts: ['1 голос'] });
-    const handledUserLikesArrayAgain = getHandledTestUserLikes({ userIds: [1], valueTexts: ['1 голос'] });
+    const handledUserLikesArray = getHandledTestUsersWithValues({ userIds: [1], valueTexts: ['1'] });
+    const handledUserLikesArrayAgain = getHandledTestUsersWithValues({ userIds: [1], valueTexts: ['1'] });
 
     expect(handledUserLikesArray).not.toBe(handledUserLikesArrayAgain);
     expect(handledUserLikesArray[0]).not.toBe(handledUserLikesArrayAgain[0]);
   });
 
   test('returned array contains object with selected user.ids and valuesTexts', () => {
-    const handledUserLikesArray = getHandledTestUserLikes({
+    const handledUserLikesArray = getHandledTestUsersWithValues({
       userIds: [4, 3, 2, 5],
       valueTexts: ['24 голоса', '48 голосов', '21 голос', '11 голосов'],
     });

@@ -4,6 +4,8 @@ function getTestUser({
   friendsIndexes = [],
   comments = false,
   commentItems = [],
+  commits = false,
+  commitsItems = [],
 } = {}) {
   const friends = [];
   for (let friendIx = 0; friendIx < friendsQuantity; friendIx += 1) {
@@ -33,6 +35,10 @@ function getTestUser({
 
   if (comments) {
     user.comments = commentItems;
+  }
+
+  if (commits) {
+    user.commits = commitsItems;
   }
 
   return user;
