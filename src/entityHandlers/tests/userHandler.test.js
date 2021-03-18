@@ -8,7 +8,7 @@ afterEach(() => {
   });
 });
 
-describe('userHandler tests', () => {
+describe('userHandler function tests', () => {
   describe('handler returning', () => {
     test('type of user.id is a number', () => {
       const user = getTestUser();

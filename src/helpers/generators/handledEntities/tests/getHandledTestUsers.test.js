@@ -1,7 +1,7 @@
 const { getHandledTestUsers } = require('../getHandledTestUsers');
 
 describe('getHandledTestUsers function tests', () => {
-  test('return map (user.id as key, user entity as value)', () => {
+  test('return map with user.id as key and user entity as value)', () => {
     const handledUsers = getHandledTestUsers({ userIds: [1] });
 
     expect(handledUsers).toBeInstanceOf(Map);

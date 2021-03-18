@@ -28,6 +28,12 @@ describe('getTestSprint function tests', () => {
     expect(sprint.id).toBe(2);
   });
 
+  test('return sprint with property active, if passed', () => {
+    const sprint = getTestSprint({ active: true });
+
+    expect(sprint).toHaveProperty('active', true);
+  });
+
   test('return sprint entity with selected name', () => {
     const sprint = getTestSprint({ name: 'test sprint name2' });
 
