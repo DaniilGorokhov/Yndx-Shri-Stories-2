@@ -1,5 +1,6 @@
 function getTestSprint({
   sprintId = 1,
+  active = false,
   name = `test sprint name${sprintId}`,
   startAt = Date.now(),
   finishAt = Date.now(),
@@ -11,6 +12,10 @@ function getTestSprint({
     startAt,
     finishAt,
   };
+
+  if (active) {
+    sprint.active = true;
+  }
 
   return sprint;
 }

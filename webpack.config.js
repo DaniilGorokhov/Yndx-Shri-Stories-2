@@ -8,8 +8,12 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'index.js',
     publicPath: '/',
+    // Retain export of prepareData function for both - browser and Node.js
+    library: {
+      type: 'umd',
+    },
+    globalObject: 'this',
   },
-  devtool: 'inline-source-map',
   plugins: [
     new EslintWebpackPlugin(),
   ],

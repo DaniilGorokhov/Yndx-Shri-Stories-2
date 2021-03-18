@@ -9,7 +9,7 @@ afterEach(() => {
   });
 });
 
-describe('commentHandler tests', () => {
+describe('commentHandler function tests', () => {
   describe('likes collecting', () => {
     test('add likes entity as array for author as user.id', () => {
       const comment = getTestComment();

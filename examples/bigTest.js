@@ -18,12 +18,55 @@ fs.writeFile('./examples/output.dev.json', resultAsString, (error) => {
 });
 
 // If there are difference, will be outputted error message
-const expectedLeadersOutput = expectedOutput[0];
-const receivedLeadersOutput = result[0];
+const errorMessages = [];
 
-assert.deepStrictEqual(expectedLeadersOutput, receivedLeadersOutput);
+try {
+  const expectedLeadersOutput = expectedOutput[0];
+  const receivedLeadersOutput = result[0];
 
-const expectedVoteOutput = expectedOutput[1];
-const receivedVoteOutput = result[1];
+  assert.deepStrictEqual(receivedLeadersOutput, expectedLeadersOutput);
+} catch (error) {
+  errorMessages.push(error.message);
+}
 
-assert.deepStrictEqual(expectedVoteOutput, receivedVoteOutput);
+try {
+  const expectedVoteOutput = expectedOutput[1];
+  const receivedVoteOutput = result[1];
+
+  assert.deepStrictEqual(receivedVoteOutput, expectedVoteOutput);
+} catch (error) {
+  errorMessages.push(error.message);
+}
+
+try {
+  const expectedChartOutput = expectedOutput[2];
+  const receivedChartOutput = result[2];
+
+  assert.deepStrictEqual(receivedChartOutput, expectedChartOutput);
+} catch (error) {
+  errorMessages.push(error.message);
+}
+
+try {
+  const expectedDiagramOutput = expectedOutput[3];
+  const receivedDiagramOutput = result[3];
+
+  assert.deepStrictEqual(receivedDiagramOutput, expectedDiagramOutput);
+} catch (error) {
+  errorMessages.push(error.message);
+}
+
+try {
+  const expectedActivityOutput = expectedOutput[4];
+  const receivedActivityOutput = result[4];
+
+  assert.deepStrictEqual(receivedActivityOutput, expectedActivityOutput);
+} catch (error) {
+  errorMessages.push(error.message);
+}
+
+if (errorMessages.length) {
+  console.log(errorMessages.join('\n\n\n'));
+} else {
+  console.log('Tests OK!');
+}

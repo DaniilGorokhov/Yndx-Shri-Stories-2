@@ -1,31 +1,26 @@
 const { getHandledTestCommits } = require('../getHandledTestCommits');
 
 describe('getHandledTestCommits function tests', () => {
-  test('return map, where key is author.id and value is array of commits', () => {
+  test('return array', () => {
     const now = Date.now();
     const handledCommits = getHandledTestCommits({
-      commitIds: [['111-x']],
+      commitIds: ['111-x'],
       authorIds: [1],
-      timestamps: [[now]],
+      timestamps: [now],
     });
 
-    expect(handledCommits).toBeInstanceOf(Map);
-    expect(handledCommits.get(1)).toStrictEqual([{
-      id: '111-x',
-      author: 1,
-      timestamp: now,
-    }]);
+    expect(handledCommits).toBeInstanceOf(Array);
   });
 
-  test('returned map item has selected properties', () => {
+  test('each object of returned array has selected properties', () => {
     const now = Date.now();
     const handledCommits = getHandledTestCommits({
-      commitIds: [['111-x', '211-x'], ['311-x']],
-      authorIds: [14, 39],
-      timestamps: [[now, now + 100], [now + 200]],
+      commitIds: ['111-x', '211-x', '311-x'],
+      authorIds: [14, 39, 28],
+      timestamps: [now, now + 100, now + 200],
     });
 
-    expect(handledCommits.get(14)).toStrictEqual([
+    expect(handledCommits).toStrictEqual([
       {
         id: '111-x',
         author: 14,
@@ -33,14 +28,14 @@ describe('getHandledTestCommits function tests', () => {
       },
       {
         id: '211-x',
-        author: 14,
+        author: 39,
         timestamp: now + 100,
       },
+      {
+        id: '311-x',
+        author: 28,
+        timestamp: now + 200,
+      },
     ]);
-    expect(handledCommits.get(39)).toStrictEqual([{
-      id: '311-x',
-      author: 39,
-      timestamp: now + 200,
-    }]);
   });
 });

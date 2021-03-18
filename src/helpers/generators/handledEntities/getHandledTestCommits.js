@@ -1,21 +1,18 @@
 function getHandledTestCommits({
-  commitIds = [[]],
+  commitIds = [],
   authorIds = [],
-  timestamps = [[]],
+  timestamps = [],
 } = {}) {
-  const handledCommits = new Map();
+  const handledCommits = [];
 
   for (let ix = 0; ix < commitIds.length; ix += 1) {
-    const currentAuthorCommits = [];
-    for (let commitIx = 0; commitIx < commitIds[ix].length; commitIx += 1) {
-      currentAuthorCommits.push({
-        id: commitIds[ix][commitIx],
-        author: authorIds[ix],
-        timestamp: timestamps[ix][commitIx],
-      });
-    }
+    const commit = {
+      id: commitIds[ix],
+      author: authorIds[ix],
+      timestamp: timestamps[ix],
+    };
 
-    handledCommits.set(authorIds[ix], currentAuthorCommits);
+    handledCommits.push(commit);
   }
 
   return handledCommits;

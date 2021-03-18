@@ -1,4 +1,4 @@
-const { getVotesText } = require('./getVotesText');
+const { getFormattedText } = require('./getFormattedText');
 
 // this function wire user and they likes in active sprint
 function userLikes(users, likes, { startAt, finishAt }) {
@@ -19,7 +19,15 @@ function userLikes(users, likes, { startAt, finishAt }) {
       }
     }
 
-    userCopy.valueText = getVotesText(userLikesSum);
+    userCopy.valueText = getFormattedText(
+      userLikesSum,
+      'голос',
+      {
+        one: '',
+        twoFive: 'а',
+        other: 'ов',
+      },
+    );
 
     userLikesArray.push(userCopy);
   });

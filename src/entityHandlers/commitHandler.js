@@ -1,4 +1,5 @@
-const commits = new Map();
+const commits = [];
+const handledCommitsId = new Set();
 
 function commitHandler(commit) {
   let authorId;
@@ -14,15 +15,15 @@ function commitHandler(commit) {
     timestamp: commit.timestamp,
   };
 
-  if (commits.has(authorId)) {
-    const currentAuthorCommits = commits.get(authorId);
-    currentAuthorCommits.push(handledCommit);
-  } else {
-    commits.set(authorId, [handledCommit]);
+  if (!handledCommitsId.has(commit.id)) {
+    handledCommitsId.add(commit.id);
+
+    commits.push(handledCommit);
   }
 }
 
 module.exports = {
   commits,
+  handledCommitsId,
   commitHandler,
 };

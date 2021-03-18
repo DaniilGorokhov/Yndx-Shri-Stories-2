@@ -1,17 +1,16 @@
-const { commits, commitHandler } = require('../commitHandler');
+const { commits, handledCommitsId, commitHandler } = require('../commitHandler');
 
 const { getTestCommit } = require('../../helpers/generators/getTestCommit');
 const { getTestUser } = require('../../helpers/generators/getTestUser');
 
 afterEach(() => {
-  commits.forEach((value, key) => {
-    commits.delete(key);
-  });
+  while (commits.length) commits.pop();
+  handledCommitsId.forEach((value) => handledCommitsId.delete(value));
 });
 
-describe('commitHandler tests', () => {
-  test('save commits in Map', () => {
-    expect(commits).toBeInstanceOf(Map);
+describe('commitHandler function tests', () => {
+  test('save commits in array', () => {
+    expect(commits).toBeInstanceOf(Array);
   });
 
   test('do not change passed object', () => {
@@ -23,22 +22,14 @@ describe('commitHandler tests', () => {
     expect(commit).toStrictEqual(commitCopy);
   });
 
-  test('save commits by author.id as array of commits', () => {
-    const commit = getTestCommit();
-
-    commitHandler(commit);
-
-    expect(commits.get(commit.author)).toBeInstanceOf(Array);
-    expect(commits.get(commit.author)).toHaveLength(1);
-  });
-
   test('save commit only with properties id, author, timestamp', () => {
     const now = Date.now();
     const commit = getTestCommit({ timestamp: now });
 
     commitHandler(commit);
 
-    expect(commits.get(commit.author)[0]).toStrictEqual({
+    expect(commits).toHaveLength(1);
+    expect(commits[0]).toStrictEqual({
       id: '11112222-3333-4444-5555-666677778888',
       author: 1,
       timestamp: now,
@@ -51,7 +42,8 @@ describe('commitHandler tests', () => {
 
     commitHandler(commit);
 
-    expect(commits.get(author.id)[0].author).toBe(author.id);
+    expect(commits).toHaveLength(1);
+    expect(commits[0].author).toBe(author.id);
   });
 
   test('do not rewrite saved commit if passed commit with same id', () => {
@@ -61,6 +53,7 @@ describe('commitHandler tests', () => {
     commitHandler(commit);
     commitHandler(commitAgain);
 
-    expect(commits.get(commit.author)[0].timestamp).toBe(commit.timestamp);
+    expect(commits).toHaveLength(1);
+    expect(commits[0].timestamp).toBe(commit.timestamp);
   });
 });

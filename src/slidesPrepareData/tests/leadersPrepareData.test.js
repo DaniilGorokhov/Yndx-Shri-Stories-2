@@ -5,9 +5,9 @@ const {
   getHandledTestUsersWithValues,
 } = require('../../helpers/generators/handledEntities/getHandledTestUsersWithValues');
 
-describe('leadersPrepareData tests', () => {
+describe('leadersPrepareData function tests', () => {
   test('return object only with properties alias and data', () => {
-    const activeSprint = getTestSprint();
+    const activeSprint = getTestSprint({ active: true });
     const userCommitsArray = getHandledTestUsersWithValues();
     const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
 
@@ -17,7 +17,7 @@ describe('leadersPrepareData tests', () => {
   });
 
   test('returned object has property alias with value \'leaders\'', () => {
-    const activeSprint = getTestSprint();
+    const activeSprint = getTestSprint({ active: true });
     const userCommitsArray = getHandledTestUsersWithValues();
     const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
 
@@ -25,7 +25,7 @@ describe('leadersPrepareData tests', () => {
   });
 
   test('returned object.data has only properties title, subtitle, emoji and users', () => {
-    const activeSprint = getTestSprint();
+    const activeSprint = getTestSprint({ active: true });
     const userCommitsArray = getHandledTestUsersWithValues();
     const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
 
@@ -36,7 +36,7 @@ describe('leadersPrepareData tests', () => {
   });
 
   test('returned object.data.users is strict equal to passed userCommits', () => {
-    const activeSprint = getTestSprint();
+    const activeSprint = getTestSprint({ active: true });
     const userCommitsArray = getHandledTestUsersWithValues({
       userIds: [1, 2, 5],
       valueTexts: ['24', '16', '8'],
