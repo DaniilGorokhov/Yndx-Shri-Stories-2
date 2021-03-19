@@ -572,7 +572,7 @@ describe('prepareData function tests', () => {
       const expectedUsers = getHandledTestUsersWithValues({
         // When values are equal, user will be 'greater' if person has appeared earlier.
         // Order related to user appearance in data.
-        userIds: [8, 6, 7, 0, 1, 2, 3, 4, 5, 10, 9, 11, 18, 19, 20, 12, 13, 14, 15, 16, 17],
+        userIds: [8, 6, 7, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
         valueTexts: [
           '5 голосов',
           '3 голоса',
@@ -729,7 +729,7 @@ describe('prepareData function tests', () => {
       const expectedUsers = getHandledTestUsersWithValues({
         userIds: [
           // Order related to appearance of users in data
-          0, 1, 2, 3, 4, 5, 6, 8, 10, 9, 7,
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         ],
         valueTexts: [
           '4', '4', '4', '3', '3', '2', '2', '0', '0', '0', '0',
@@ -891,8 +891,8 @@ describe('prepareData function tests', () => {
       }
 
       const expectedUsers = getHandledTestUsersWithValues({
-        // Order related to appearance of users in data
-        userIds: [6, 7, 8, 9, 5, 1, 0, 2, 3, 4],
+        // Order related to appearance of users in data TODO clear
+        userIds: [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
         valueTexts: ['2', '2', '2', '2', '2', '1', '1', '1', '1', '1'],
       });
 
@@ -1126,13 +1126,13 @@ describe('prepareData function tests', () => {
       );
 
       const expectedHeatMapData = {
-        sun: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        mon: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        tue: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        wed: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        thu: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        fri: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        sat: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        sun: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        mon: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        tue: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        wed: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        thu: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        fri: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        sat: [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
       };
 
       expect(slidesPreparedData[4]).toStrictEqual({
@@ -1144,5 +1144,14 @@ describe('prepareData function tests', () => {
         },
       });
     });
+  });
+
+  test('return right data with empty sprint', () => {
+    const sprint = getTestSprint();
+
+    const slidesPreparedData = prepareData([sprint], { sprintId: 1 });
+
+    // TODO
+    expect(slidesPreparedData).toBeInstanceOf(Array);
   });
 });
