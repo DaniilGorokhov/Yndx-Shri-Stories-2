@@ -572,7 +572,7 @@ describe('prepareData function tests', () => {
       const expectedUsers = getHandledTestUsersWithValues({
         // When values are equal, user will be 'greater' if person has appeared earlier.
         // Order related to user appearance in data.
-        userIds: [8, 6, 7, 1, 2, 3, 4, 5, 0, 10, 9, 11, 18, 19, 20, 12, 13, 14, 15, 16, 17],
+        userIds: [8, 6, 7, 0, 1, 2, 3, 4, 5, 10, 9, 11, 18, 19, 20, 12, 13, 14, 15, 16, 17],
         valueTexts: [
           '5 голосов',
           '3 голоса',
@@ -892,7 +892,7 @@ describe('prepareData function tests', () => {
 
       const expectedUsers = getHandledTestUsersWithValues({
         // Order related to appearance of users in data
-        userIds: [9, 5, 6, 7, 8, 1, 0, 2, 3, 4],
+        userIds: [6, 7, 8, 9, 5, 1, 0, 2, 3, 4],
         valueTexts: ['2', '2', '2', '2', '2', '1', '1', '1', '1', '1'],
       });
 
@@ -905,6 +905,24 @@ describe('prepareData function tests', () => {
           users: expectedUsers,
         },
       });
+    });
+
+    test('return right data for chart slide if passed several active sprints', () => {
+      const sprintsToTest = [];
+      for (let sprintIx = 0; sprintIx < 5; sprintIx += 1) {
+        const sprint = getTestSprint({
+          sprintId: 1,
+        });
+
+        sprintsToTest.push(sprint);
+      }
+
+      const slidesPreparedData = prepareData(
+        sprintsToTest,
+        { sprintId: 1 },
+      );
+
+      expect(slidesPreparedData[2].data.values).toHaveLength(1);
     });
 
     test('return right data for diagram slide', () => {
