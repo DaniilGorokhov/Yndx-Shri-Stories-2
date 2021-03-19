@@ -136,7 +136,10 @@ describe('prepareData function tests', () => {
     });
 
     test('save commit.author as user', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
       const author = getTestUser();
       const commit = getTestCommit({ author });
 
@@ -146,7 +149,10 @@ describe('prepareData function tests', () => {
     });
 
     test('do not save commit.author as user if commit.author is user.id', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
       const commit = getTestCommit();
 
       prepareData([commit, sprint], { sprintId: 1 });
@@ -280,7 +286,10 @@ describe('prepareData function tests', () => {
 
   describe('commit entity handling', () => {
     test('save commits if passed entities with type Commit', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
 
       const now = Date.now();
       const commit1 = getTestCommit({ commitId: '111-x', timestamp: now });
@@ -303,7 +312,10 @@ describe('prepareData function tests', () => {
     });
 
     test('save commits if passed entity with type User with property commits', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
 
       const now = Date.now();
       const commitsToTest = [];
@@ -331,7 +343,10 @@ describe('prepareData function tests', () => {
 
     test('save commits if passed entity with type Project with property commits', () => {
       const now = Date.now();
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
       const commitsToTest = [];
       for (let commitIx = 0; commitIx < 5; commitIx += 1) {
         commitsToTest.push(getTestCommit({
@@ -355,7 +370,10 @@ describe('prepareData function tests', () => {
 
   describe('summary entity handling', () => {
     test('save summary if passed entity with type Summary', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
       const summary = getTestSummary();
 
       prepareData([sprint, summary], { sprintId: 1 });
@@ -368,7 +386,10 @@ describe('prepareData function tests', () => {
     });
 
     test('save summary if passed entity with type Commit with properties summaries', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
 
       const summary = getTestSummary();
       const commit = getTestCommit({
@@ -386,7 +407,10 @@ describe('prepareData function tests', () => {
 
     test('wire summary.id and commit.id '
       + 'if passed entity with type Commit with properties summaries', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
 
       const summariesToTest = [];
       for (let summaryId = 0; summaryId < 5; summaryId += 1) {
