@@ -4,7 +4,7 @@ const assert = require('assert').strict;
 const input = require('./input.json');
 const expectedOutput = require('./output.json');
 
-const { prepareData } = require('../src/index');
+const { prepareData } = require('../build/index');
 
 const result = prepareData(input, { sprintId: 977 });
 const resultAsString = JSON.stringify(

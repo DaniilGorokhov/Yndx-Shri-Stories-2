@@ -25,15 +25,15 @@
           "valueText": "11"
         },
         {
-          "id": 5,
-          "name": "Александр Николаичев",
-          "avatar": "5.jpg",
-          "valueText": "7"
-        },
-        {
           "id": 11,
           "name": "Юрий Фролов",
           "avatar": "11.jpg",
+          "valueText": "7"
+        },
+        {
+          "id": 5,
+          "name": "Александр Николаичев",
+          "avatar": "5.jpg",
           "valueText": "7"
         },
         {
@@ -386,15 +386,15 @@
           "valueText": "11"
         },
         {
-          "id": 5,
-          "name": "Александр Николаичев",
-          "avatar": "5.jpg",
-          "valueText": "7"
-        },
-        {
           "id": 11,
           "name": "Юрий Фролов",
           "avatar": "11.jpg",
+          "valueText": "7"
+        },
+        {
+          "id": 5,
+          "name": "Александр Николаичев",
+          "avatar": "5.jpg",
           "valueText": "7"
         },
         {

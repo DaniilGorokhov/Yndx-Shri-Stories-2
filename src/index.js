@@ -154,7 +154,7 @@ function prepareData(entities, { sprintId }) {
   // chart slide
   sortByProperty({
     array: sprints,
-    propertyForSort: 'startAt',
+    propertyForSort: 'id',
   });
 
   const { sprintCommitsArray, activeCommits, previousCommits } = sprintCommits(sprints, commits);
@@ -165,7 +165,7 @@ function prepareData(entities, { sprintId }) {
     array: userCommitsArray,
     propertyForSort: 'valueText',
     descending: true,
-    uniqueSortMap: usersOrder,
+    // uniqueSortMap: usersOrder,
   });
 
   // leaders slide
@@ -174,7 +174,7 @@ function prepareData(entities, { sprintId }) {
     array: userLikesArray,
     propertyForSort: 'valueText',
     descending: true,
-    uniqueSortMap: usersOrder,
+    // uniqueSortMap: usersOrder,
   });
 
   // diagram slide
