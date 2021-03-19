@@ -22,18 +22,18 @@ describe('computeHeatMap function tests', () => {
     const activeSprint = getTestSprint();
 
     const timestamps = [ // comment consists of day and hour
-      new Date(1616336316244), // sun 17
-      new Date(1615151916244), // mon 0
-      new Date(1614575916244), // mon 8
-      new Date(1614683916244), // tue 14
-      new Date(1616530716244), // tue 23
-      new Date(1615947516244), // wed 5
-      new Date(1614799116244), // wed 22
-      new Date(1616051916244), // thu 10
-      new Date(1616080716244), // thu 18
-      new Date(1614903516244), // fri 3
-      new Date(1616156316244), // fri 15
-      new Date(1615022316244), // sat 12
+      new Date(1616347116244), // sun 17
+      new Date(1615162716244), // mon 0
+      new Date(1614586716244), // mon 8
+      new Date(1614694716244), // tue 14
+      new Date(1616541516244), // tue 23
+      new Date(1615958316244), // wed 5
+      new Date(1614809916244), // wed 22
+      new Date(1616062716244), // thu 10
+      new Date(1616091516244), // thu 18
+      new Date(1614914316244), // fri 3
+      new Date(1616167116244), // fri 15
+      new Date(1615033116244), // sat 12
     ];
     const activeCommits = getHandledTestCommits({
       commitIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],

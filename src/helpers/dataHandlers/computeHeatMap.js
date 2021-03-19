@@ -15,8 +15,8 @@ function computeHeatMap(activeCommits) {
     const commit = activeCommits[commitIx];
 
     const commitDate = new Date(commit.timestamp);
-    const commitDay = commitDate.getDay();
-    const commitHour = commitDate.getHours();
+    const commitDay = commitDate.getUTCDay();
+    const commitHour = commitDate.getUTCHours();
 
     const dayName = days[commitDay];
     heatMapData[dayName][commitHour] += 1;
