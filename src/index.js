@@ -187,7 +187,7 @@ function prepareData(entities, { sprintId }) {
   });
 
   // activity slide
-  const heatMapData = computeHeatMap(activeCommits);
+  const heatMapData = computeHeatMap(activeCommits, activeSprint);
 
   const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
   const voteSlideData = votePrepareData(userLikesArray, activeSprint);

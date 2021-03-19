@@ -19,41 +19,46 @@ describe('computeHeatMap function tests', () => {
   });
 
   test('returned data corresponds to passed commits', () => {
-    const activeSprint = getTestSprint();
+    const activeSprint = getTestSprint({
+      startAt: 1615755600000,
+      finishAt: 1616360399999,
+    });
 
     const timestamps = [ // comment consists of day and hour
-      new Date(1616347116244), // sun 17
-      new Date(1615162716244), // mon 0
-      new Date(1614586716244), // mon 8
-      new Date(1614694716244), // tue 14
-      new Date(1616541516244), // tue 23
-      new Date(1615958316244), // wed 5
-      new Date(1614809916244), // wed 22
-      new Date(1616062716244), // thu 10
-      new Date(1616091516244), // thu 18
-      new Date(1614914316244), // fri 3
-      new Date(1616167116244), // fri 15
-      new Date(1615033116244), // sat 12
+      new Date(1616347116244), // sun 20
+      // new Date(1615162716244), // mon 3
+      // new Date(1614586716244), // mon 11
+      // new Date(1614694716244), // tue 17
+      // new Date(1616541516244), // wed 2
+      new Date(1615958316244), // wed 8
+      // new Date(1614809916244), // thu 1
+      // new Date(1616062716244), // thu 13
+      // new Date(1616091516244), // thu 21
+      // new Date(1614914316244), // fri 6
+      // new Date(1616167116244), // fri 18
+      // new Date(1615033116244), // sat 15
     ];
     const activeCommits = getHandledTestCommits({
-      commitIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-      authorIds: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      commitIds: [0, 1],
+      authorIds: [1, 1],
+      // commitIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      // authorIds: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       timestamps,
     });
 
     const heatMapData = computeHeatMap(activeCommits, activeSprint);
 
     const expectedValues = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-      [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     ];
 
-    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
     for (let dayIx = 0; dayIx < days.length; dayIx += 1) {
       expect(heatMapData).toHaveProperty(days[dayIx], expectedValues[dayIx]);
