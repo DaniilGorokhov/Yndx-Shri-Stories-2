@@ -108,7 +108,11 @@ describe('userLikes function tests', () => {
       likeItems: [
         [
           {
-            timestamp: now,
+            timestamp: now - 100,
+            quantity: 5,
+          },
+          {
+            timestamp: now + 1000,
             quantity: 2,
           },
           {
@@ -121,7 +125,30 @@ describe('userLikes function tests', () => {
 
     const userLikesArray = userLikes(users, likes, activeSprint);
 
-    expect(userLikesArray[0]).toHaveProperty('valueText', '2 голоса');
+    expect(userLikesArray[0]).toHaveProperty('valueText', '5 голосов');
+  });
+
+  test('return right data if timestamp of likes is equal to activeSprint.finishAt', () => {
+    const now = Date.now();
+    const activeSprint = getTestSprint({ startAt: now - 100000, finishAt: now });
+
+    const users = getHandledTestUsers({ userIds: [1] });
+
+    const likes = getHandledTestLikes({
+      userIds: [1],
+      likeItems: [
+        [
+          {
+            timestamp: now + 1000,
+            quantity: 2,
+          },
+        ],
+      ],
+    });
+
+    const userLikesArray = userLikes(users, likes, activeSprint);
+
+    expect(userLikesArray[0]).toHaveProperty('valueText', '0 голосов');
   });
 
   test('return right data when there are users, '

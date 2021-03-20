@@ -13,7 +13,7 @@ function userLikes(users, likes, { startAt, finishAt }) {
     if (userLikesRaw) {
       for (let userLikesItemIx = 0; userLikesItemIx < userLikesRaw.length; userLikesItemIx += 1) {
         const { timestamp, quantity } = userLikesRaw[userLikesItemIx];
-        if (timestamp >= startAt && timestamp <= finishAt) {
+        if (timestamp >= startAt && timestamp < finishAt) {
           userLikesSum += quantity;
         }
       }
