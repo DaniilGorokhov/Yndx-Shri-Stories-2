@@ -1,11 +1,11 @@
-const { commits, handledCommitsId, commitHandler } = require('../commitHandler');
+const { commits, commitSummaries, commitHandler } = require('../commitHandler');
 
 const { getTestCommit } = require('../../helpers/generators/getTestCommit');
 const { getTestUser } = require('../../helpers/generators/getTestUser');
+const { getTestSummary } = require('../../helpers/generators/getTestSummary');
 
 afterEach(() => {
   while (commits.length) commits.pop();
-  handledCommitsId.forEach((value) => handledCommitsId.delete(value));
 });
 
 describe('commitHandler function tests', () => {
@@ -46,14 +46,28 @@ describe('commitHandler function tests', () => {
     expect(commits[0].author).toBe(author.id);
   });
 
-  test('do not rewrite saved commit if passed commit with same id', () => {
-    const commit = getTestCommit({ timestamp: 10 });
-    const commitAgain = getTestCommit({ timestamp: 100 });
+  test('save all summaryId of summaries property of commit', () => {
+    const summariesToTest = [];
+    for (let summaryId = 0; summaryId < 10; summaryId += 1) {
+      if (summaryId % 2 === 1) {
+        summariesToTest.push(summaryId);
+      } else {
+        const summary = getTestSummary({
+          summaryId,
+        });
+
+        summariesToTest.push(summary);
+      }
+    }
+
+    const commit = getTestCommit({
+      summaries: summariesToTest,
+    });
 
     commitHandler(commit);
-    commitHandler(commitAgain);
 
-    expect(commits).toHaveLength(1);
-    expect(commits[0].timestamp).toBe(commit.timestamp);
+    expect(commitSummaries.size).toBe(1);
+    expect(commitSummaries.get(commit.id)).toHaveLength(10);
+    expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 });

@@ -1,8 +1,10 @@
+const { LinkedList } = require('./helpers/mainFlow/LinkedList');
+
 const { users, userHandler } = require('./entityHandlers/userHandler');
 const { likes, commentHandler } = require('./entityHandlers/commentHandler');
 const { sprints, activeSprint, sprintHandler } = require('./entityHandlers/sprintHandler');
-const { commits, commitHandler } = require('./entityHandlers/commitHandler');
-const { summaries, commitSummaries, summaryHandler } = require('./entityHandlers/summaryHandler');
+const { commits, commitSummaries, commitHandler } = require('./entityHandlers/commitHandler');
+const { summaries, summaryHandler } = require('./entityHandlers/summaryHandler');
 
 const { userLikes } = require('./helpers/dataHandlers/userLikes');
 const { sortByProperty } = require('./helpers/dataHandlers/sortByProperty');
@@ -18,44 +20,82 @@ const { diagramPrepareData } = require('./slidesPrepareData/diagramPrepareData')
 const { activityPrepareData } = require('./slidesPrepareData/activityPrepareData');
 
 function prepareData(entities, { sprintId }) {
-  // this variable need to retain order of handling users for order.
-  const usersOrder = new Map();
-  let orderValue = 0;
-  let handledUserId;
-
   for (let entityIx = 0; entityIx < entities.length; entityIx += 1) {
     const entity = entities[entityIx];
 
-    // currentEntities - linked list.
-    // It is used to avoid handling nested entities by using recursion.
-    let currentEntities = { data: entity, next: null };
-    let tail = currentEntities;
+    const linkedListIns = new LinkedList(entity);
 
-    while (currentEntities !== null) {
-      const currentEntity = currentEntities.data;
+    while (linkedListIns.entities !== null) {
+      const currentEntity = linkedListIns.entities.data;
 
       switch (currentEntity.type) {
         case 'User':
-          handledUserId = userHandler(currentEntity);
+          userHandler(currentEntity);
 
-          // Save user order
-          if (!usersOrder.has(handledUserId)) {
-            usersOrder.set(handledUserId, orderValue);
+          linkedListIns.handleProperty({
+            property: 'friends',
+          });
+
+          if (currentEntity.comments) {
+            linkedListIns.handleProperty({
+              property: 'comments',
+            });
+          }
+
+          if (currentEntity.commits) {
+            linkedListIns.handleProperty({
+              property: 'commits',
+            });
           }
 
           break;
         case 'Comment':
           commentHandler(currentEntity);
 
+          linkedListIns.handleProperty({
+            property: 'author',
+            type: 'not array-like',
+          });
+
+          linkedListIns.handleProperty({
+            property: 'likes',
+          });
+
           break;
         case 'Commit':
           commitHandler(currentEntity);
 
+          linkedListIns.handleProperty({
+            property: 'author',
+            type: 'not array-like',
+          });
+
+          linkedListIns.handleProperty({
+            property: 'summaries',
+          });
+
           break;
         case 'Issue':
+          if (currentEntity.resolvedBy) {
+            linkedListIns.handleProperty({
+              property: 'resolvedBy',
+              type: 'not array-like',
+            });
+          }
+
+          linkedListIns.handleProperty({
+            property: 'comments',
+          });
+
           break;
         case 'Summary':
           summaryHandler(currentEntity);
+
+          if (currentEntity.comments) {
+            linkedListIns.handleProperty({
+              property: 'comments',
+            });
+          }
 
           break;
         case 'Sprint':
@@ -63,87 +103,24 @@ function prepareData(entities, { sprintId }) {
 
           break;
         case 'Project':
+          linkedListIns.handleProperty({
+            property: 'dependencies',
+          });
+
+          linkedListIns.handleProperty({
+            property: 'issues',
+          });
+
+          linkedListIns.handleProperty({
+            property: 'commits',
+          });
+
           break;
         default:
           throw new Error('error: type of entity is invalid');
       }
 
-      // Here we check properties, which can contain nested entities
-      // like user.friends, that can contain other user entity.
-      // If they contain entity, it add to linked list and handling in further by cycle.
-      // It taken out, since else we should repeat same block for different properties.
-      const withMulNestedEntities = [
-        'friends', 'comments', 'commits', 'issues', 'dependencies', 'likes', 'summaries',
-      ];
-
-      for (let propertyIx = 0; propertyIx < withMulNestedEntities.length; propertyIx += 1) {
-        const property = withMulNestedEntities[propertyIx];
-
-        if (currentEntity[property]) {
-          for (let ix = 0; ix < currentEntity[property].length; ix += 1) {
-            if (typeof currentEntity[property][ix] === 'object') {
-              const newEntity = { data: currentEntity[property][ix], next: null };
-              tail.next = newEntity;
-              tail = newEntity;
-            }
-
-            // Wiring commitId and summaryIds.
-            if (property === 'summaries') {
-              let summaryId = currentEntity[property][ix];
-              if (typeof summaryId === 'object') {
-                summaryId = summaryId.id;
-              }
-
-              if (commitSummaries.has(currentEntity.id)) {
-                const currentSummaries = commitSummaries.get(currentEntity.id);
-                currentSummaries.push(summaryId);
-              } else {
-                commitSummaries.set(currentEntity.id, [summaryId]);
-              }
-            }
-
-            if (property === 'friends' || property === 'likes') {
-              if (typeof currentEntity[property][ix] === 'object') {
-                handledUserId = currentEntity[property][ix].id;
-              } else {
-                handledUserId = currentEntity[property][ix];
-              }
-
-              if (!usersOrder.has(handledUserId)) {
-                usersOrder.set(handledUserId, orderValue);
-                orderValue += 1;
-              }
-            }
-          }
-        }
-      }
-
-      const withSingNestedEntities = [
-        'author', 'resolvedBy',
-      ];
-
-      for (let propertyIx = 0; propertyIx < withSingNestedEntities.length; propertyIx += 1) {
-        const property = withSingNestedEntities[propertyIx];
-
-        if (currentEntity[property]) {
-          if (typeof currentEntity[property] === 'object') {
-            const newEntity = { data: currentEntity[property], next: null };
-            tail.next = newEntity;
-            tail = newEntity;
-
-            handledUserId = currentEntity[property].id;
-          } else {
-            handledUserId = currentEntity[property];
-          }
-
-          if (!usersOrder.has(handledUserId)) {
-            usersOrder.set(handledUserId, orderValue);
-            orderValue += 1;
-          }
-        }
-      }
-
-      currentEntities = currentEntities.next;
+      linkedListIns.next();
     }
   }
 
@@ -165,7 +142,6 @@ function prepareData(entities, { sprintId }) {
     array: userCommitsArray,
     propertyForSort: 'valueText',
     descending: true,
-    // uniqueSortMap: usersOrder,
   });
 
   // leaders slide
@@ -174,7 +150,6 @@ function prepareData(entities, { sprintId }) {
     array: userLikesArray,
     propertyForSort: 'valueText',
     descending: true,
-    // uniqueSortMap: usersOrder,
   });
 
   // diagram slide

@@ -3,7 +3,7 @@ function getTestUser({
   friendsQuantity = 0,
   friendsIndexes = [],
   comments = false,
-  commentItems = [],
+  commentsItems = [],
   commits = false,
   commitsItems = [],
 } = {}) {
@@ -34,7 +34,7 @@ function getTestUser({
   };
 
   if (comments) {
-    user.comments = commentItems;
+    user.comments = commentsItems;
   }
 
   if (commits) {

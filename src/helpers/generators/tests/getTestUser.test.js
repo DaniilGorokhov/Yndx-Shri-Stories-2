@@ -87,7 +87,7 @@ describe('getTestUser function tests', () => {
 
   test('return user with comments as a array if they passed', () => {
     const comment = getTestComment();
-    const user = getTestUser({ comments: true, commentItems: [comment] });
+    const user = getTestUser({ comments: true, commentsItems: [comment] });
 
     expect(user.comments).toHaveLength(1);
     expect(user.comments[0]).toStrictEqual(comment);

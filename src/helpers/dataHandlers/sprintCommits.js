@@ -9,23 +9,24 @@ const { binarySearchStartByProperty } = require('./binarySearchStartByProperty')
 function sprintCommits(sprints, commits) {
   const sprintCommitsMap = new Map();
 
+  const lastSprint = sprints[sprints.length - 1];
+  // finisher is a end of last possible sprint.
+  // It is necessary for ensure, that our commits do not exceed possible sprints time
+  const finisher = { startAt: lastSprint.finishAt + 1 };
+
   for (let commitIx = 0; commitIx < commits.length; commitIx += 1) {
     const commit = commits[commitIx];
-    const newCommit = {
-      id: commit.id,
-      author: commit.author,
-      timestamp: commit.timestamp,
-    };
+    const newCommit = { ...commit };
 
     const index = binarySearchStartByProperty({
-      array: sprints,
+      array: [...sprints, finisher],
       itemProperty: 'startAt',
       value: newCommit,
       valueProperty: 'timestamp',
     });
 
     // Ignore commit if it belongs to not exist sprint
-    if (index !== -1) {
+    if (index !== -1 && index !== sprints.length) {
       const sprintId = sprints[index].id;
 
       if (sprintCommitsMap.has(sprintId)) {
@@ -43,22 +44,16 @@ function sprintCommits(sprints, commits) {
 
   for (let sprintIx = 0; sprintIx < sprints.length; sprintIx += 1) {
     const sprint = sprints[sprintIx];
-    const newSprint = {
-      id: sprint.id,
-      name: sprint.name,
-      commits: [],
-      startAt: sprint.startAt,
-      finishAt: sprint.finishAt,
-    };
+    const newSprint = { ...sprint };
 
     const currentSprintCommits = sprintCommitsMap.get(sprint.id);
     if (currentSprintCommits instanceof Array) {
       newSprint.commits = currentSprintCommits;
+    } else {
+      newSprint.commits = [];
     }
 
-    if (sprint.active) {
-      newSprint.active = true;
-
+    if (newSprint.active) {
       activeCommits = newSprint.commits;
       if (sprintIx === 0) {
         previousCommits = [];

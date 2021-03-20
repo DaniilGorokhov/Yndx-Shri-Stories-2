@@ -58,7 +58,7 @@ describe('getTestSummary function tests', () => {
     for (let commentId = 2; commentId < 5; commentId += 1) {
       comments.push(getTestComment({ commentId }));
     }
-    const summary = getTestSummary({ comments: true, commentItems: comments });
+    const summary = getTestSummary({ comments: true, commentsItems: comments });
 
     expect(summary.comments).toStrictEqual(comments);
   });

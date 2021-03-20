@@ -10,9 +10,7 @@ function summaryHandler(summary) {
     value: summary.added + summary.removed,
   };
 
-  if (!summaries.has(handledSummary.id)) {
-    summaries.set(handledSummary.id, handledSummary);
-  }
+  summaries.set(handledSummary.id, handledSummary);
 }
 
 module.exports = {

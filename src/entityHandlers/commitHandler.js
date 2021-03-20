@@ -1,5 +1,5 @@
 const commits = [];
-const handledCommitsId = new Set();
+const commitSummaries = new Map();
 
 function commitHandler(commit) {
   let authorId;
@@ -15,15 +15,25 @@ function commitHandler(commit) {
     timestamp: commit.timestamp,
   };
 
-  if (!handledCommitsId.has(commit.id)) {
-    handledCommitsId.add(commit.id);
+  commits.push(handledCommit);
 
-    commits.push(handledCommit);
+  const currentCommitSummaries = [];
+  for (let summaryIx = 0; summaryIx < commit.summaries.length; summaryIx += 1) {
+    let newSummaryId;
+    if (typeof commit.summaries[summaryIx] === 'object') {
+      newSummaryId = commit.summaries[summaryIx].id;
+    } else {
+      newSummaryId = commit.summaries[summaryIx];
+    }
+
+    currentCommitSummaries.push(newSummaryId);
   }
+
+  commitSummaries.set(commit.id, currentCommitSummaries);
 }
 
 module.exports = {
   commits,
-  handledCommitsId,
+  commitSummaries,
   commitHandler,
 };

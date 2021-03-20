@@ -12,7 +12,30 @@ describe('binarySearchStartByProperty function tests', () => {
     expect(result).toBe(0);
   });
 
-  describe('return max left index, by that in array by passed item property store item, '
+  test('do not change passed array', () => {
+    const array = [
+      { value: 1 },
+      { value: 21 },
+      { value: 35 },
+      { value: 55 },
+    ];
+    const arrayCopy = array.map((item) => ({ ...item }));
+
+    const value = {
+      value: 64,
+    };
+    const index = binarySearchStartByProperty({
+      array,
+      itemProperty: 'value',
+      value,
+      valueProperty: 'value',
+    });
+
+    expect(array).toStrictEqual(arrayCopy);
+    expect(index).toBe(array.length - 1);
+  });
+
+  describe('return max left index, if array[index] store item, '
     + 'that is non-strict less, than value', () => {
     test('return right index if value.valueProperty equal to one item value', () => {
       const array = [

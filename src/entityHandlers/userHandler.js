@@ -7,9 +7,7 @@ function userHandler(user) {
     avatar: user.avatar,
   };
 
-  if (!users.has(user.id)) {
-    users.set(handledUser.id, handledUser);
-  }
+  users.set(handledUser.id, handledUser);
 
   return handledUser.id;
 }
