@@ -1,9 +1,9 @@
-function votePrepareData(userLikesArray, activeSprint) {
+function votePrepareData(userLikesArray, { name }) {
   const preparedData = {
     alias: 'vote',
     data: {
       title: 'Самый 🔎 внимательный разработчик',
-      subtitle: activeSprint.name,
+      subtitle: name,
       emoji: '🔎',
       users: userLikesArray,
     },

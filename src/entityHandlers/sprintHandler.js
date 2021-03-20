@@ -16,7 +16,7 @@ function sprintHandler(sprint, activeSprintId) {
   if (sprint.id === activeSprintId) {
     newSprint.active = true;
 
-    Object.assign(activeSprint, newSprint);
+    activeSprint.data = newSprint;
   }
 
   sprints.push(newSprint);
