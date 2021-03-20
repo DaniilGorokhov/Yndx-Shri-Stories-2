@@ -4,7 +4,7 @@ function getTestSummary({
   added = 100,
   removed = 50,
   comments = false,
-  commentItems = [],
+  commentsItems = [],
 } = {}) {
   const summary = {
     id: summaryId,
@@ -15,7 +15,7 @@ function getTestSummary({
   };
 
   if (comments) {
-    summary.comments = commentItems;
+    summary.comments = commentsItems;
   }
 
   return summary;

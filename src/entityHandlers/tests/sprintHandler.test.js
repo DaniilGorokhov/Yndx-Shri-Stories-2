@@ -1,7 +1,6 @@
 const {
   sprints,
   activeSprint,
-  handledSprintsId,
   sprintHandler,
 } = require('../sprintHandler');
 
@@ -9,7 +8,6 @@ const { getTestSprint } = require('../../helpers/generators/getTestSprint');
 
 afterEach(() => {
   while (sprints.length) sprints.pop();
-  handledSprintsId.forEach((value) => handledSprintsId.delete(value));
 });
 
 describe('sprintHandler function tests', () => {
@@ -34,18 +32,6 @@ describe('sprintHandler function tests', () => {
       startAt: now,
       finishAt: now + 1000,
     });
-  });
-
-  test('do not rewrite sprint if passed sprint with same id', () => {
-    const sprint1 = getTestSprint();
-    const sprint2 = getTestSprint();
-    sprint2.name = 'test sprint name2';
-
-    sprintHandler(sprint1, sprint1.id);
-    sprintHandler(sprint2, sprint1.id);
-
-    expect(sprints).toHaveLength(1);
-    expect(sprints[0].name).toBe(sprint1.name);
   });
 
   test('add active property with value true if sprint.id is activeSprintId', () => {

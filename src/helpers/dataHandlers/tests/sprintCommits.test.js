@@ -6,7 +6,12 @@ const { getHandledTestSprints } = require('../../generators/handledEntities/getH
 describe('sprintCommits function tests', () => {
   test('return object with 3 properties: sprintCommitsArray, '
     + 'activeCommits, previousCommits', () => {
-    const result = sprintCommits([], []);
+    const activeSprint = getHandledTestSprints({
+      sprintIds: [1],
+      activeId: 1,
+      timestamps: [0],
+    });
+    const result = sprintCommits(activeSprint, []);
 
     expect(result).toHaveProperty('sprintCommitsArray');
     expect(result).toHaveProperty('activeCommits');

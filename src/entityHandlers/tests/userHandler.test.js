@@ -101,15 +101,5 @@ describe('userHandler function tests', () => {
       userHandler(user);
       expect(users.size).toBe(1);
     });
-
-    test('do not rewrite user if pass one user twice', () => {
-      const user = getTestUser();
-
-      userHandler(user);
-
-      user.name = 'test username2';
-      userHandler(user);
-      expect(users.get(user.id).name).toBe('test username1');
-    });
   });
 });
