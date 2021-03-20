@@ -46,7 +46,7 @@ function sprintCommits(sprints, commits) {
     const sprint = sprints[sprintIx];
     const newSprint = { ...sprint };
 
-    const currentSprintCommits = sprintCommitsMap.get(sprint.id);
+    const currentSprintCommits = sprintCommitsMap.get(newSprint.id);
     if (currentSprintCommits instanceof Array) {
       newSprint.commits = currentSprintCommits;
     } else {
@@ -55,6 +55,7 @@ function sprintCommits(sprints, commits) {
 
     if (newSprint.active) {
       activeCommits = newSprint.commits;
+
       if (sprintIx === 0) {
         previousCommits = [];
       } else {

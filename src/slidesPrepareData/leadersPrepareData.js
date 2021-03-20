@@ -1,9 +1,9 @@
-function leadersPrepareData(userCommitsArray, activeSprint) {
+function leadersPrepareData(userCommitsArray, { name }) {
   const leadersSlideData = {
     alias: 'leaders',
     data: {
       title: 'Больше всего коммитов',
-      subtitle: activeSprint.name,
+      subtitle: name,
       emoji: '👑',
       users: userCommitsArray,
     },

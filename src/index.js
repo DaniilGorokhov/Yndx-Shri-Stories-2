@@ -124,14 +124,14 @@ function prepareData(entities, { sprintId }) {
     }
   }
 
-  if (Object.keys(activeSprint).length === 0) {
+  if (typeof activeSprint.data === 'undefined') {
     throw new Error('error: active sprint did not find');
   }
 
   // chart slide
   sortByProperty({
     array: sprints,
-    propertyForSort: 'id',
+    propertyForSort: 'startAt',
   });
 
   const { sprintCommitsArray, activeCommits, previousCommits } = sprintCommits(sprints, commits);
@@ -145,7 +145,7 @@ function prepareData(entities, { sprintId }) {
   });
 
   // leaders slide
-  const userLikesArray = userLikes(users, likes, activeSprint);
+  const userLikesArray = userLikes(users, likes, activeSprint.data);
   sortByProperty({
     array: userLikesArray,
     propertyForSort: 'valueText',
@@ -162,13 +162,17 @@ function prepareData(entities, { sprintId }) {
   });
 
   // activity slide
-  const heatMapData = computeHeatMap(activeCommits, activeSprint);
+  const heatMapData = computeHeatMap(activeCommits, activeSprint.data);
 
-  const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint);
-  const voteSlideData = votePrepareData(userLikesArray, activeSprint);
-  const chartSlideData = chartPrepareData(sprintCommitsArray, userCommitsArray, activeSprint);
-  const diagramSlideData = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
-  const activitySlideData = activityPrepareData(heatMapData, activeSprint);
+  const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint.data);
+  const voteSlideData = votePrepareData(userLikesArray, activeSprint.data);
+  const chartSlideData = chartPrepareData(sprintCommitsArray, userCommitsArray, activeSprint.data);
+  const diagramSlideData = diagramPrepareData(
+    activeStatistics,
+    previousStatistics,
+    activeSprint.data,
+  );
+  const activitySlideData = activityPrepareData(heatMapData, activeSprint.data);
 
   const slides = [
     leadersSlideData,

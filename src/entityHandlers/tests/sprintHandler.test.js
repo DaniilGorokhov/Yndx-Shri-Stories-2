@@ -52,17 +52,19 @@ describe('sprintHandler function tests', () => {
     expect(sprints[0]).not.toHaveProperty('active');
   });
 
-  test('save copy of active sprint in exported variable activeSprint', () => {
+  test('save copy of active sprint in exported variable activeSprint '
+    + 'in property data as reference to object', () => {
     const sprint = getTestSprint();
 
     sprintHandler(sprint, sprint.id);
 
-    expect(activeSprint).toStrictEqual({
+    expect(activeSprint.data).toStrictEqual({
       id: sprint.id,
       name: sprint.name,
       startAt: sprint.startAt,
       finishAt: sprint.finishAt,
       active: true,
     });
+    expect(activeSprint.data).toBe(sprints[0]);
   });
 });
