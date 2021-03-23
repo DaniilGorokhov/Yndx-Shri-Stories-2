@@ -131,7 +131,7 @@ function prepareData(entities, { sprintId }) {
   // chart slide
   sortByProperty({
     array: sprints,
-    propertyForSort: 'startAt',
+    propertyForSort: 'id',
   });
 
   const { sprintCommitsArray, activeCommits, previousCommits } = sprintCommits(sprints, commits);
@@ -162,7 +162,7 @@ function prepareData(entities, { sprintId }) {
   });
 
   // activity slide
-  const heatMapData = computeHeatMap(activeCommits, activeSprint.data);
+  const heatMapData = computeHeatMap(activeCommits);
 
   const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint.data);
   const voteSlideData = votePrepareData(userLikesArray, activeSprint.data);

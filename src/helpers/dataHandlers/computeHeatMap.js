@@ -1,8 +1,5 @@
-function computeHeatMap(activeCommits, { startAt, finishAt }) {
-  const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-  const sprintTime = finishAt - startAt;
-  const dayTime = sprintTime / 7;
-  const hourTime = dayTime / 24;
+function computeHeatMap(activeCommits) {
+  const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
   const heatMapData = {};
   for (let dayIx = 0; dayIx < days.length; dayIx += 1) {
@@ -17,9 +14,9 @@ function computeHeatMap(activeCommits, { startAt, finishAt }) {
   for (let commitIx = 0; commitIx < activeCommits.length; commitIx += 1) {
     const commit = activeCommits[commitIx];
 
-    const commitDate = (commit.timestamp - startAt);
-    const commitDay = Math.floor(commitDate / dayTime) % 7;
-    const commitHour = Math.floor(commitDate / hourTime) % 24;
+    const commitDate = new Date(commit.timestamp);
+    const commitDay = commitDate.getDay();
+    const commitHour = commitDate.getHours();
 
     const dayName = days[commitDay];
     heatMapData[dayName][commitHour] += 1;
