@@ -8,6 +8,8 @@ const { getTestSprint } = require('../../helpers/generators/getTestSprint');
 
 afterEach(() => {
   while (sprints.length) sprints.pop();
+
+  delete activeSprint.data;
 });
 
 describe('sprintHandler function tests', () => {

@@ -1,7 +1,7 @@
 const { prepareData } = require('../index');
 const { users } = require('../entityHandlers/userHandler');
 const { likes } = require('../entityHandlers/commentHandler');
-const { sprints } = require('../entityHandlers/sprintHandler');
+const { sprints, activeSprint } = require('../entityHandlers/sprintHandler');
 const { commits, commitSummaries } = require('../entityHandlers/commitHandler');
 const { summaries } = require('../entityHandlers/summaryHandler');
 
@@ -27,6 +27,7 @@ afterEach(() => {
   });
 
   while (sprints.length) sprints.pop();
+  delete activeSprint.data;
 
   while (commits.length) commits.pop();
   commitSummaries.forEach((value, key) => {
