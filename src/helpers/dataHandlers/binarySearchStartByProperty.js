@@ -17,8 +17,9 @@ function binarySearchStartByProperty({
   while (rightIndex - leftIndex !== 1) {
     const middleIndex = Math.round((leftIndex + rightIndex) / 2);
 
-    // Math.floor for solve errors with float numbers comparing
-    if (Math.floor(array[middleIndex][itemProperty]) > Math.floor(value[valueProperty])) {
+    // Math.floor + multiplication by 10000 for solve errors with float numbers comparing
+    if (Math.floor(array[middleIndex][itemProperty] * 10000)
+      > Math.floor(value[valueProperty] * 10000)) {
       rightIndex = middleIndex;
     } else {
       leftIndex = middleIndex;
