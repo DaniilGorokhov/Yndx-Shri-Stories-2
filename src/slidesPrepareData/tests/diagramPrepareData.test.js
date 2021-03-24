@@ -165,7 +165,7 @@ describe('diagramPrepareData function tests', () => {
       }
     });
 
-    test('valueTexts of categories item correspond to '
+    test('differenceTexts of categories item correspond to '
       + 'activeStatistics - previousStatistics respectively', () => {
       const activeSprint = getTestSprint();
       const activeStatistics = getTestStatistics({
@@ -194,6 +194,45 @@ describe('diagramPrepareData function tests', () => {
 
       for (let ix = 0; ix < 4; ix += 1) {
         expect(categories[ix].differenceText).toBe(expectedTexts[ix]);
+      }
+    });
+
+    test('return right data, when activeStatistics is nullish '
+    + 'and previous is not nullish', () => {
+      const activeSprint = getTestSprint();
+      const activeStatistics = getTestStatistics({
+        min: 0,
+        mid: 0,
+        max: 0,
+        extra: 0,
+      });
+      const previousStatistics = getTestStatistics({
+        min: 25,
+        mid: 4,
+        max: 101,
+        extra: 19,
+      });
+
+      const {
+        data: { categories },
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+
+      const expectedValueTexts = [
+        '0 коммитов',
+        '0 коммитов',
+        '0 коммитов',
+        '0 коммитов',
+      ];
+      const expectedDifferenceTexts = [
+        '-19 коммитов',
+        '-101 коммит',
+        '-4 коммита',
+        '-25 коммитов',
+      ];
+
+      for (let ix = 0; ix < 4; ix += 1) {
+        expect(categories[ix].valueText).toBe(expectedValueTexts[ix]);
+        expect(categories[ix].differenceText).toBe(expectedDifferenceTexts[ix]);
       }
     });
   });

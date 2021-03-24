@@ -12,12 +12,12 @@ function commentHandler(comment) {
     timestamp: comment.createdAt,
     quantity: comment.likes.length,
   };
-  if (likes.has(authorUserId)) {
-    const userLikes = likes.get(authorUserId);
+
+  const userLikes = likes.get(authorUserId);
+  if (typeof userLikes !== 'undefined') {
     userLikes.push(newLikesItem);
   } else {
-    const userLikes = [newLikesItem];
-    likes.set(authorUserId, userLikes);
+    likes.set(authorUserId, [newLikesItem]);
   }
 }
 

@@ -95,11 +95,12 @@ describe('getVotesText function tests', () => {
     }
   });
 
-  test('interact with absolute value if passed value is negative', () => {
-    const params = [-3, -1, -11, -9];
+  test('interact with absolute value if passed values are negative', () => {
+    const params = [-3, -1, -11, -9, -25];
     const expectedWords = [
       'коммита',
       'коммит',
+      'коммитов',
       'коммитов',
       'коммитов',
     ];

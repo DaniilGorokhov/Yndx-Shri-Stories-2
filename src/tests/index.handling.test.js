@@ -130,7 +130,7 @@ describe('prepareData (entity handling) function tests', () => {
       expect(users.size).toBe(0);
     });
 
-    test('save commit.author as user', () => {
+    test('save commit.author as user if it is user entity', () => {
       const sprint = getTestSprint({
         startAt: 0,
         finishAt: 604799999,
@@ -188,17 +188,76 @@ describe('prepareData (entity handling) function tests', () => {
       expect(users.size).toBe(0);
     });
 
-    test('save user when passed entity with type Issue with property resolvedBy', () => {
-      const sprint = getTestSprint();
-      const user = getTestUser();
-      const issue = getTestIssue({
-        resolvedBy: true,
-        resolvedByUser: user,
+    test('save users if passed commit with author as '
+      + 'user with comment with likes with another user', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
       });
 
-      prepareData([issue, sprint], { sprintId: 1 });
+      const user = getTestUser({
+        userId: 0,
+        commits: true,
+        commitsItems: [],
+      });
+      const comment = getTestComment({
+        likes: [user],
+      });
+      const userWithComment = getTestUser({
+        userId: 1,
+        comments: true,
+        commentsItems: [comment],
+      });
+      const commitWithAuthor = getTestCommit({
+        commitId: '111-x',
+        author: userWithComment,
+      });
 
-      expect(users.size).toBe(1);
+      prepareData(
+        [
+          sprint,
+          commitWithAuthor,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(users.size).toBe(2);
+    });
+
+    test('save users if passed issue with resolvedBy as '
+      + 'user with comment with likes with another user', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const user = getTestUser({
+        userId: 0,
+        commits: true,
+        commitsItems: [],
+      });
+      const comment = getTestComment({
+        likes: [user],
+      });
+      const userWithComment = getTestUser({
+        userId: 1,
+        comments: true,
+        commentsItems: [comment],
+      });
+      const issue = getTestIssue({
+        resolvedBy: true,
+        resolvedByUser: userWithComment,
+      });
+
+      prepareData(
+        [
+          sprint,
+          issue,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(users.size).toBe(2);
     });
   });
 
@@ -482,7 +541,7 @@ describe('prepareData (entity handling) function tests', () => {
         commitId: '011-x',
       });
       const user = getTestUser({
-        userId: 1,
+        userId: 0,
         commits: true,
         commitsItems: [commit],
       });
@@ -519,7 +578,7 @@ describe('prepareData (entity handling) function tests', () => {
 
       const commit = getTestCommit();
       const user = getTestUser({
-        userId: 1,
+        userId: 0,
         commits: true,
         commitsItems: [commit],
       });

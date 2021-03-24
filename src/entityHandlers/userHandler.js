@@ -8,8 +8,6 @@ function userHandler(user) {
   };
 
   users.set(handledUser.id, handledUser);
-
-  return handledUser.id;
 }
 
 module.exports = {

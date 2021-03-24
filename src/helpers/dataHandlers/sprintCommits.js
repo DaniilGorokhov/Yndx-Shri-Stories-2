@@ -12,7 +12,7 @@ function sprintCommits(sprints, commits) {
   const lastSprint = sprints[sprints.length - 1];
   // finisher is a end of last possible sprint.
   // It is necessary for ensure, that our commits do not exceed possible sprints time
-  const finisher = { startAt: lastSprint.finishAt + 1 };
+  const finisher = { startAt: lastSprint.finishAt };
 
   for (let commitIx = 0; commitIx < commits.length; commitIx += 1) {
     const commit = commits[commitIx];
@@ -25,12 +25,14 @@ function sprintCommits(sprints, commits) {
       valueProperty: 'timestamp',
     });
 
-    // Ignore commit if it belongs to not exist sprint
+    // Ignore commit if it belongs to not exist sprint.
+    // We compare with sprint.length, not with sprints.length - 1,
+    // since we should take into account finisher
     if (index !== -1 && index !== sprints.length) {
       const sprintId = sprints[index].id;
 
-      if (sprintCommitsMap.has(sprintId)) {
-        const currentSprintCommits = sprintCommitsMap.get(sprintId);
+      const currentSprintCommits = sprintCommitsMap.get(sprintId);
+      if (typeof currentSprintCommits !== 'undefined') {
         currentSprintCommits.push(newCommit);
       } else {
         sprintCommitsMap.set(sprintId, [newCommit]);
@@ -47,7 +49,7 @@ function sprintCommits(sprints, commits) {
     const newSprint = { ...sprint };
 
     const currentSprintCommits = sprintCommitsMap.get(newSprint.id);
-    if (currentSprintCommits instanceof Array) {
+    if (Array.isArray(currentSprintCommits)) {
       newSprint.commits = currentSprintCommits;
     } else {
       newSprint.commits = [];
