@@ -1,6 +1,12 @@
 const { getFormattedText } = require('../helpers/dataHandlers/getFormattedText');
 
-function diagramPrepareData(activeStatistics, previousStatistics, { name }) {
+function diagramPrepareData(
+  activeStatistics,
+  previousStatistics,
+  { name },
+  activeCommitsQuantity,
+  previousCommitsQuantity,
+) {
   const getDifferenceValue = (value) => {
     if (value > 0) {
       return `+${value}`;
@@ -8,13 +14,8 @@ function diagramPrepareData(activeStatistics, previousStatistics, { name }) {
     return value.toString();
   };
 
-  const activeTotal = Object.values(activeStatistics).reduce(
-    (sum, value) => sum + value,
-    0,
-  );
-
   const totalText = getFormattedText(
-    activeTotal,
+    activeCommitsQuantity,
     'коммит',
     {
       one: '',
@@ -23,12 +24,7 @@ function diagramPrepareData(activeStatistics, previousStatistics, { name }) {
     },
   );
 
-  const previousTotal = Object.values(previousStatistics).reduce(
-    (sum, value) => sum + value,
-    0,
-  );
-
-  const differenceTotalText = getDifferenceValue(activeTotal - previousTotal);
+  const differenceTotalText = getDifferenceValue(activeCommitsQuantity - previousCommitsQuantity);
 
   const baseConfig = [
     'коммит',

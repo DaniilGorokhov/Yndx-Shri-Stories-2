@@ -309,7 +309,7 @@ describe('prepareData (entity handling) function tests', () => {
       expect(likes.get(1)).toHaveLength(3);
     });
 
-    test('save likes if passed entity with type Summary', () => {
+    test('save likes if passed entity with type Summary with comments', () => {
       const sprint = getTestSprint();
       const comments = [];
       for (let commentId = 1; commentId < 4; commentId += 1) {
@@ -335,6 +335,35 @@ describe('prepareData (entity handling) function tests', () => {
 
       expect(likes.size).toBe(1);
       expect(likes.get(1)).toHaveLength(1);
+    });
+
+    test('save likes from comment, that is contained in user.comments, '
+      + 'when user is deep in friends property of others users', () => {
+      const sprint = getTestSprint();
+
+      const comment = getTestComment({
+        author: 199999,
+        likes: [0, 1, 2, 3],
+      });
+
+      const user = getTestUser({ userId: 0 });
+      let currentUser = user;
+      for (let userId = 1; userId < 200000; userId += 1) {
+        const newUser = getTestUser({ userId });
+
+        currentUser.friends.push(newUser);
+        currentUser = newUser;
+
+        if (userId === 199999) {
+          currentUser.comments = [comment];
+        }
+      }
+
+      prepareData([user, sprint], { sprintId: 1 });
+
+      expect(likes.size).toBe(1);
+      expect(likes.get(199999)).toHaveLength(1);
+      expect(likes.get(199999)[0].quantity).toBe(4);
     });
   });
 

@@ -171,6 +171,8 @@ function prepareData(entities, { sprintId }) {
     activeStatistics,
     previousStatistics,
     activeSprint.data,
+    activeCommits.length,
+    previousCommits.length,
   );
   const activitySlideData = activityPrepareData(heatMapData, activeSprint.data);
 

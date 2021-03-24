@@ -27,7 +27,7 @@ describe('diagramPrepareData function tests', () => {
     const activeSprint = getTestSprint();
     const activeStatistics = getTestStatistics();
     const previousStatistics = getTestStatistics();
-    const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+    const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 0);
 
     expect(Object.keys(data)).toHaveLength(5);
     expect(data).toHaveProperty('title', 'Размер коммитов');
@@ -46,7 +46,7 @@ describe('diagramPrepareData function tests', () => {
       extra: 5,
     });
     const previousStatistics = getTestStatistics();
-    const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+    const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 65, 0);
 
     expect(data).toHaveProperty('totalText', '65 коммитов');
   });
@@ -62,7 +62,9 @@ describe('diagramPrepareData function tests', () => {
         extra: 5,
       });
       const previousStatistics = getTestStatistics();
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const {
+        data,
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 65, 0);
 
       expect(data).toHaveProperty('differenceText', '+65 с прошлого спринта');
     });
@@ -81,7 +83,9 @@ describe('diagramPrepareData function tests', () => {
         max: 3,
         extra: 2,
       });
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const {
+        data,
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 65, 65);
 
       expect(data).toHaveProperty('differenceText', '0 с прошлого спринта');
     });
@@ -100,9 +104,33 @@ describe('diagramPrepareData function tests', () => {
         max: 30,
         extra: 25,
       });
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const {
+        data,
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 65, 115);
 
       expect(data).toHaveProperty('differenceText', '-50 с прошлого спринта');
+    });
+
+    test('when value is negative and '
+      + 'activeStatistics is nullish (all properties in statistics are 0)', () => {
+      const activeSprint = getTestSprint();
+      const activeStatistics = getTestStatistics({
+        min: 0,
+        mid: 0,
+        max: 0,
+        extra: 0,
+      });
+      const previousStatistics = getTestStatistics({
+        min: 40,
+        mid: 20,
+        max: 30,
+        extra: 25,
+      });
+      const {
+        data,
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 115);
+
+      expect(data).toHaveProperty('differenceText', '-115 с прошлого спринта');
     });
   });
 
@@ -111,7 +139,7 @@ describe('diagramPrepareData function tests', () => {
       const activeSprint = getTestSprint();
       const activeStatistics = getTestStatistics();
       const previousStatistics = getTestStatistics();
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 0);
 
       expect(data.categories).toBeInstanceOf(Array);
     });
@@ -120,7 +148,7 @@ describe('diagramPrepareData function tests', () => {
       const activeSprint = getTestSprint();
       const activeStatistics = getTestStatistics();
       const previousStatistics = getTestStatistics();
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 0);
 
       expect(data.categories).toHaveLength(4);
     });
@@ -129,7 +157,7 @@ describe('diagramPrepareData function tests', () => {
       const activeSprint = getTestSprint();
       const activeStatistics = getTestStatistics();
       const previousStatistics = getTestStatistics();
-      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      const { data } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 0);
 
       for (let ix = 0; ix < 4; ix += 1) {
         expect(Object.keys(data.categories[ix])).toHaveLength(3);
@@ -151,7 +179,7 @@ describe('diagramPrepareData function tests', () => {
 
       const {
         data: { categories },
-      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 105, 0);
 
       const expectedTexts = [
         '3 коммита',
@@ -183,7 +211,7 @@ describe('diagramPrepareData function tests', () => {
 
       const {
         data: { categories },
-      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 105, 134);
 
       const expectedTexts = [
         '-10 коммитов',
@@ -215,7 +243,7 @@ describe('diagramPrepareData function tests', () => {
 
       const {
         data: { categories },
-      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint);
+      } = diagramPrepareData(activeStatistics, previousStatistics, activeSprint, 0, 149);
 
       const expectedValueTexts = [
         '0 коммитов',
