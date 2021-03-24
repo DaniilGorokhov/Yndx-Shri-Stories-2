@@ -757,80 +757,320 @@ describe('prepareData (slide data) function tests', () => {
       },
     });
   });
-});
 
-test('return right data with empty sprint', () => {
-  const sprint = getTestSprint({
-    name: 'Спринт № 213',
-  });
+  describe('return right data for empty sprint', () => {
+    test('when passed only active sprint', () => {
+      const sprint = getTestSprint({
+        name: 'Спринт № 213',
+      });
 
-  const slidesPreparedData = prepareData([sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([sprint], { sprintId: 1 });
 
-  expect(slidesPreparedData).toStrictEqual([
-    {
-      alias: 'leaders',
-      data: {
-        title: 'Больше всего коммитов',
-        subtitle: sprint.name,
-        emoji: '👑',
-        users: [],
-      },
-    },
-    {
-      alias: 'vote',
-      data: {
-        title: 'Самый 🔎 внимательный разработчик',
-        subtitle: sprint.name,
-        emoji: '🔎',
-        users: [],
-      },
-    },
-    {
-      alias: 'chart',
-      data: {
-        title: 'Коммиты',
-        subtitle: sprint.name,
-        values: [
-          {
-            title: '1',
-            hint: sprint.name,
-            value: 0,
-            active: true,
+      expect(slidesPreparedData).toStrictEqual([
+        {
+          alias: 'leaders',
+          data: {
+            title: 'Больше всего коммитов',
+            subtitle: sprint.name,
+            emoji: '👑',
+            users: [],
           },
-        ],
-        users: [],
-      },
-    },
-    {
-      alias: 'diagram',
-      data: {
-        title: 'Размер коммитов',
-        subtitle: sprint.name,
-        totalText: '0 коммитов',
-        differenceText: '0 с прошлого спринта',
-        categories: [
-          { title: '> 1001 строки', valueText: '0 коммитов', differenceText: '0 коммитов' },
-          { title: '501 — 1000 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
-          { title: '101 — 500 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
-          { title: '1 — 100 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
-        ],
-      },
-    },
-    {
-      alias: 'activity',
-      data: {
-        title: 'Коммиты',
-        subtitle: sprint.name,
-        data: {
-          mon: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          tue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          wed: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          thu: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          fri: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          sat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          sun: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         },
-      },
-    },
-  ]);
+        {
+          alias: 'vote',
+          data: {
+            title: 'Самый 🔎 внимательный разработчик',
+            subtitle: sprint.name,
+            emoji: '🔎',
+            users: [],
+          },
+        },
+        {
+          alias: 'chart',
+          data: {
+            title: 'Коммиты',
+            subtitle: sprint.name,
+            values: [
+              {
+                title: '1',
+                hint: sprint.name,
+                value: 0,
+                active: true,
+              },
+            ],
+            users: [],
+          },
+        },
+        {
+          alias: 'diagram',
+          data: {
+            title: 'Размер коммитов',
+            subtitle: sprint.name,
+            totalText: '0 коммитов',
+            differenceText: '0 с прошлого спринта',
+            categories: [
+              { title: '> 1001 строки', valueText: '0 коммитов', differenceText: '0 коммитов' },
+              { title: '501 — 1000 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
+              { title: '101 — 500 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
+              { title: '1 — 100 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
+            ],
+          },
+        },
+        {
+          alias: 'activity',
+          data: {
+            title: 'Коммиты',
+            subtitle: sprint.name,
+            data: {
+              mon: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              tue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              wed: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              thu: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              fri: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              sat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              sun: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            },
+          },
+        },
+      ]);
+    });
+
+    test('when passed activeSprint and users without commits and likes', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const usersToTest = [];
+      for (let userId = 0; userId < 10; userId += 1) {
+        const user = getTestUser({
+          userId,
+        });
+
+        usersToTest.push(user);
+      }
+
+      const slidesPreparedData = prepareData(
+        [sprint, ...usersToTest],
+        { sprintId: 1 },
+      );
+
+      const expectedUsersWithVotes = getHandledTestUsersWithValues({
+        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        valueTexts: [
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+        ],
+      });
+
+      const expectedUsersWithCommits = getHandledTestUsersWithValues({
+        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        valueTexts: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+      });
+
+      expect(slidesPreparedData[0]).toStrictEqual({
+        alias: 'leaders',
+        data: {
+          title: 'Больше всего коммитов',
+          subtitle: sprint.name,
+          emoji: '👑',
+          users: expectedUsersWithCommits,
+        },
+      });
+      expect(slidesPreparedData[1]).toStrictEqual({
+        alias: 'vote',
+        data: {
+          title: 'Самый 🔎 внимательный разработчик',
+          subtitle: sprint.name,
+          emoji: '🔎',
+          users: expectedUsersWithVotes,
+        },
+      });
+      expect(slidesPreparedData[2]).toStrictEqual({
+        alias: 'chart',
+        data: {
+          title: 'Коммиты',
+          subtitle: sprint.name,
+          values: [
+            {
+              title: '1',
+              hint: sprint.name,
+              value: 0,
+              active: true,
+            },
+          ],
+          users: expectedUsersWithCommits,
+        },
+      });
+    });
+
+    test('when passed activeSprint and users without commits and likes, '
+      + 'but with comments', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const usersToTest = [];
+      for (let userId = 0; userId < 10; userId += 1) {
+        const userComments = [];
+        for (let commentIx = 0; commentIx < 10; commentIx += 1) {
+          const comment = getTestComment({
+            author: userId,
+            commentId: `${userId}11-${commentIx}11-x`,
+          });
+
+          userComments.push(comment);
+        }
+
+        const user = getTestUser({
+          userId,
+          comments: true,
+          commitsItems: userComments,
+        });
+
+        usersToTest.push(user);
+      }
+
+      const slidesPreparedData = prepareData(
+        [sprint, ...usersToTest],
+        { sprintId: 1 },
+      );
+
+      const expectedUsersWithVotes = getHandledTestUsersWithValues({
+        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        valueTexts: [
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+          '0 голосов',
+        ],
+      });
+
+      const expectedUsersWithCommits = getHandledTestUsersWithValues({
+        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        valueTexts: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+      });
+
+      expect(slidesPreparedData[0]).toStrictEqual({
+        alias: 'leaders',
+        data: {
+          title: 'Больше всего коммитов',
+          subtitle: sprint.name,
+          emoji: '👑',
+          users: expectedUsersWithCommits,
+        },
+      });
+      expect(slidesPreparedData[1]).toStrictEqual({
+        alias: 'vote',
+        data: {
+          title: 'Самый 🔎 внимательный разработчик',
+          subtitle: sprint.name,
+          emoji: '🔎',
+          users: expectedUsersWithVotes,
+        },
+      });
+      expect(slidesPreparedData[2]).toStrictEqual({
+        alias: 'chart',
+        data: {
+          title: 'Коммиты',
+          subtitle: sprint.name,
+          values: [
+            {
+              title: '1',
+              hint: sprint.name,
+              value: 0,
+              active: true,
+            },
+          ],
+          users: expectedUsersWithCommits,
+        },
+      });
+    });
+
+    test('when passed sprints with commits, which has empty summaries', () => {
+      const sprintsToTest = [];
+      for (let sprintId = 0; sprintId < 10; sprintId += 1) {
+        const sprint = getTestSprint({
+          sprintId,
+          startAt: 604800000 * sprintId,
+          finishAt: 604799999 + 604800000 * sprintId,
+        });
+
+        sprintsToTest.push(sprint);
+      }
+
+      const commitsToTest = [];
+      for (let commitIx = 0; commitIx < 20; commitIx += 1) {
+        const commit = getTestCommit({
+          commitId: `${commitIx}11-x`,
+          timestamp: 604800000 * (commitIx / 2),
+        });
+
+        commitsToTest.push(commit);
+      }
+
+      const slidesPreparedData = prepareData(
+        [
+          ...sprintsToTest,
+          ...commitsToTest,
+        ],
+        { sprintId: 1 },
+      );
+
+      const expectedValues = [];
+      for (let ix = 0; ix < 10; ix += 1) {
+        const expectedValue = {
+          title: ix.toString(),
+          hint: `test sprint name${ix}`,
+          value: 2,
+        };
+
+        if (ix === 1) {
+          expectedValue.active = true;
+        }
+
+        expectedValues.push(expectedValue);
+      }
+
+      expect(slidesPreparedData[2]).toStrictEqual({
+        alias: 'chart',
+        data: {
+          title: 'Коммиты',
+          subtitle: sprintsToTest[1].name,
+          values: expectedValues,
+          users: [],
+        },
+      });
+      expect(slidesPreparedData[3]).toStrictEqual({
+        alias: 'diagram',
+        data: {
+          title: 'Размер коммитов',
+          subtitle: sprintsToTest[1].name,
+          totalText: '2 коммита',
+          differenceText: '0 с прошлого спринта',
+          categories: [
+            { title: '> 1001 строки', valueText: '0 коммитов', differenceText: '0 коммитов' },
+            { title: '501 — 1000 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
+            { title: '101 — 500 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
+            { title: '1 — 100 строк', valueText: '2 коммита', differenceText: '0 коммитов' },
+          ],
+        },
+      });
+    });
+  });
 });
