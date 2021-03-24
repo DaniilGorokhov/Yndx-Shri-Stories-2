@@ -101,6 +101,12 @@ function prepareData(entities, { sprintId }) {
         case 'Sprint':
           sprintHandler(currentEntity, sprintId);
 
+          if (currentEntity.commits) {
+            linkedListIns.handleProperty({
+              property: 'commits',
+            });
+          }
+
           break;
         case 'Project':
           linkedListIns.handleProperty({
