@@ -179,13 +179,13 @@ describe('computeStatistics function tests', () => {
 
     expect(statistics).toHaveLength(2);
     expect(statistics[0]).toStrictEqual({
-      min: 1,
+      min: 0,
       mid: 0,
       max: 0,
       extra: 0,
     });
     expect(statistics[1]).toStrictEqual({
-      min: 1,
+      min: 0,
       mid: 0,
       max: 0,
       extra: 0,

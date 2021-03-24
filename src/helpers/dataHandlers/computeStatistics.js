@@ -39,7 +39,7 @@ function computeStatistics({
         currentStatisticsItem.max += 1;
       } else if (commitAmount >= 101) {
         currentStatisticsItem.mid += 1;
-      } else {
+      } else if (commitAmount >= 1) {
         currentStatisticsItem.min += 1;
       }
     }

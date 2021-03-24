@@ -1067,7 +1067,7 @@ describe('prepareData (slide data) function tests', () => {
             { title: '> 1001 строки', valueText: '0 коммитов', differenceText: '0 коммитов' },
             { title: '501 — 1000 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
             { title: '101 — 500 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
-            { title: '1 — 100 строк', valueText: '2 коммита', differenceText: '0 коммитов' },
+            { title: '1 — 100 строк', valueText: '0 коммитов', differenceText: '0 коммитов' },
           ],
         },
       });
