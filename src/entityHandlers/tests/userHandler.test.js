@@ -9,18 +9,10 @@ afterEach(() => {
 });
 
 describe('userHandler function tests', () => {
-  describe('handler returning', () => {
-    test('type of user.id is a number', () => {
-      const user = getTestUser();
+  test('do not return', () => {
+    const user = getTestUser();
 
-      expect(typeof userHandler(user)).toBe('number');
-    });
-
-    test('handler return a passed user.id', () => {
-      const user = getTestUser();
-
-      expect(userHandler(user)).toBe(1);
-    });
+    expect(userHandler(user)).toBeUndefined();
   });
 
   describe('handler saving', () => {

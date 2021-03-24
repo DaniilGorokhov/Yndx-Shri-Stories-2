@@ -16,15 +16,7 @@ function computeHeatMap(activeCommits) {
 
     const commitDate = new Date(commit.timestamp);
     const commitDay = commitDate.getDay();
-    let commitHour = commitDate.getHours();
-
-    // Round minutes for intermediate timestamps (from 0 to 22),
-    // for example 0:35 will increase value of day[1], not day[0],
-    // where day is array of 24 values for heatMap and index is hour
-    const commitMinutes = commitDate.getMinutes();
-    if (commitMinutes >= 30 && commitHour !== 23) {
-      commitHour += 1;
-    }
+    const commitHour = commitDate.getHours();
 
     const dayName = days[commitDay];
     heatMapData[dayName][commitHour] += 1;
