@@ -735,5 +735,29 @@ describe('prepareData (entity handling) function tests', () => {
 
       expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4]);
     });
+
+    test('save summary, if it is passed unrelated to commit', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const summary = getTestSummary();
+      const commit = getTestCommit();
+
+      prepareData(
+        [
+          sprint,
+          summary,
+          commit,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(commitSummaries.size).toBe(1);
+      expect(commitSummaries.get(commit.id)).toHaveLength(0);
+      expect(commits).toHaveLength(1);
+      expect(summaries.size).toBe(1);
+    });
   });
 });

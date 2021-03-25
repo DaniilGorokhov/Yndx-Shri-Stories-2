@@ -1,8 +1,5 @@
 // Wire summaryId and summary entity.
 const summaries = new Map();
-// For wiring commitId and summaryIds.
-// PS wiring process perform out of this function, here we only initialize storage
-const commitSummaries = new Map();
 
 function summaryHandler(summary) {
   const handledSummary = {
@@ -15,6 +12,5 @@ function summaryHandler(summary) {
 
 module.exports = {
   summaries,
-  commitSummaries,
   summaryHandler,
 };

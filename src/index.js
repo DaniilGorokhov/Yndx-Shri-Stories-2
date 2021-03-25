@@ -1,4 +1,5 @@
 const { LinkedList } = require('./helpers/mainFlow/LinkedList');
+const { UniquenessStorage } = require('./helpers/mainFlow/UniquenessStorage');
 
 const { users, userHandler } = require('./entityHandlers/userHandler');
 const { likes, commentHandler } = require('./entityHandlers/commentHandler');
@@ -20,6 +21,9 @@ const { diagramPrepareData } = require('./slidesPrepareData/diagramPrepareData')
 const { activityPrepareData } = require('./slidesPrepareData/activityPrepareData');
 
 function prepareData(entities, { sprintId }) {
+  const types = ['project', 'user', 'issue', 'comment', 'commit', 'summary', 'sprint'];
+  const uniqStorage = new UniquenessStorage(types);
+
   for (let entityIx = 0; entityIx < entities.length; entityIx += 1) {
     const entity = entities[entityIx];
 
@@ -28,102 +32,101 @@ function prepareData(entities, { sprintId }) {
     while (linkedListIns.entities !== null) {
       const currentEntity = linkedListIns.entities.data;
 
-      switch (currentEntity.type) {
-        case 'User':
-          userHandler(currentEntity);
+      const { type } = currentEntity;
+      if (!uniqStorage.has(type, currentEntity.id)) {
+        switch (type) {
+          case 'User':
+            userHandler(currentEntity);
 
-          linkedListIns.handleProperty({
-            property: 'friends',
-          });
-
-          if (currentEntity.comments) {
             linkedListIns.handleProperty({
-              property: 'comments',
+              property: 'friends',
             });
-          }
 
-          if (currentEntity.commits) {
+            if (currentEntity.comments) {
+              linkedListIns.handleProperty({
+                property: 'comments',
+              });
+            }
+
+            if (currentEntity.commits) {
+              linkedListIns.handleProperty({
+                property: 'commits',
+              });
+            }
+
+            break;
+          case 'Comment':
+            commentHandler(currentEntity);
+
             linkedListIns.handleProperty({
-              property: 'commits',
-            });
-          }
-
-          break;
-        case 'Comment':
-          commentHandler(currentEntity);
-
-          linkedListIns.handleProperty({
-            property: 'author',
-            type: 'not array-like',
-          });
-
-          linkedListIns.handleProperty({
-            property: 'likes',
-          });
-
-          break;
-        case 'Commit':
-          commitHandler(currentEntity);
-
-          linkedListIns.handleProperty({
-            property: 'author',
-            type: 'not array-like',
-          });
-
-          linkedListIns.handleProperty({
-            property: 'summaries',
-          });
-
-          break;
-        case 'Issue':
-          if (currentEntity.resolvedBy) {
-            linkedListIns.handleProperty({
-              property: 'resolvedBy',
+              property: 'author',
               type: 'not array-like',
             });
-          }
 
-          linkedListIns.handleProperty({
-            property: 'comments',
-          });
+            linkedListIns.handleProperty({
+              property: 'likes',
+            });
 
-          break;
-        case 'Summary':
-          summaryHandler(currentEntity);
+            break;
+          case 'Commit':
+            commitHandler(currentEntity);
 
-          if (currentEntity.comments) {
+            linkedListIns.handleProperty({
+              property: 'author',
+              type: 'not array-like',
+            });
+
+            linkedListIns.handleProperty({
+              property: 'summaries',
+            });
+
+            break;
+          case 'Issue':
+            if (currentEntity.resolvedBy) {
+              linkedListIns.handleProperty({
+                property: 'resolvedBy',
+                type: 'not array-like',
+              });
+            }
+
             linkedListIns.handleProperty({
               property: 'comments',
             });
-          }
 
-          break;
-        case 'Sprint':
-          sprintHandler(currentEntity, sprintId);
+            break;
+          case 'Summary':
+            summaryHandler(currentEntity);
 
-          if (currentEntity.commits) {
+            if (currentEntity.comments) {
+              linkedListIns.handleProperty({
+                property: 'comments',
+              });
+            }
+
+            break;
+          case 'Sprint':
+            sprintHandler(currentEntity, sprintId);
+
+            break;
+          case 'Project':
+            linkedListIns.handleProperty({
+              property: 'dependencies',
+            });
+
+            linkedListIns.handleProperty({
+              property: 'issues',
+            });
+
             linkedListIns.handleProperty({
               property: 'commits',
             });
-          }
 
-          break;
-        case 'Project':
-          linkedListIns.handleProperty({
-            property: 'dependencies',
-          });
+            break;
+          default:
+            throw new Error('error: type of entity is invalid');
+        }
 
-          linkedListIns.handleProperty({
-            property: 'issues',
-          });
-
-          linkedListIns.handleProperty({
-            property: 'commits',
-          });
-
-          break;
-        default:
-          throw new Error('error: type of entity is invalid');
+        uniqStorage.add(type, currentEntity.id);
       }
 
       linkedListIns.next();
