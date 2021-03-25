@@ -46,17 +46,19 @@ function sprintCommits(sprints, commits) {
 
   for (let sprintIx = 0; sprintIx < sprints.length; sprintIx += 1) {
     const sprint = sprints[sprintIx];
-    const newSprint = { ...sprint };
+    const sprintCommitsItem = {
+      // Here we do not copy sprint
+      sprint,
+      commits: [],
+    };
 
-    const currentSprintCommits = sprintCommitsMap.get(newSprint.id);
+    const currentSprintCommits = sprintCommitsMap.get(sprint.id);
     if (Array.isArray(currentSprintCommits)) {
-      newSprint.commits = currentSprintCommits;
-    } else {
-      newSprint.commits = [];
+      sprintCommitsItem.commits = currentSprintCommits;
     }
 
-    if (newSprint.active) {
-      activeCommits = newSprint.commits;
+    if (sprint.active) {
+      activeCommits = sprintCommitsItem.commits;
 
       if (sprintIx === 0) {
         previousCommits = [];
@@ -65,7 +67,7 @@ function sprintCommits(sprints, commits) {
       }
     }
 
-    sprintCommitsArray.push(newSprint);
+    sprintCommitsArray.push(sprintCommitsItem);
   }
 
   return { sprintCommitsArray, activeCommits, previousCommits };

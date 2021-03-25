@@ -19,7 +19,6 @@ function commitHandler(commit) {
 
   const currentCommitSummaries = [];
   const handledSummariesIds = new Set();
-  // TODO tests for unique commit summaries ids
   for (let summaryIx = 0; summaryIx < commit.summaries.length; summaryIx += 1) {
     let newSummaryId;
     if (typeof commit.summaries[summaryIx] === 'object') {

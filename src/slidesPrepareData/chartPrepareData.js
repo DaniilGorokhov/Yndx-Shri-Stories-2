@@ -1,27 +1,21 @@
-const { sortByProperty } = require('../helpers/dataHandlers/sortByProperty');
-
 // this function prepare data for chart slide
 function chartPrepareData(sprintCommitsArray, userCommitsArray, { name }) {
   const values = [];
 
-  for (let sprintIx = 0; sprintIx < sprintCommitsArray.length; sprintIx += 1) {
+  for (let ix = 0; ix < sprintCommitsArray.length; ix += 1) {
+    const currentItem = sprintCommitsArray[ix];
     const sprint = {
-      title: sprintCommitsArray[sprintIx].id.toString(),
-      hint: sprintCommitsArray[sprintIx].name,
-      value: sprintCommitsArray[sprintIx].commits.length,
+      title: currentItem.sprint.id.toString(),
+      hint: currentItem.sprint.name,
+      value: currentItem.commits.length,
     };
 
-    if (sprintCommitsArray[sprintIx].active) {
+    if (currentItem.sprint.active) {
       sprint.active = true;
     }
 
     values.push(sprint);
   }
-
-  sortByProperty({
-    array: values,
-    propertyForSort: 'title',
-  });
 
   const chartPreparedData = {
     alias: 'chart',

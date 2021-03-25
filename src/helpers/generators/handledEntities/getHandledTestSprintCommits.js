@@ -14,18 +14,23 @@ function getHandledTestSprintCommits({
       name: `test sprint name${sprintIds[ix]}`,
       startAt: timestamps[ix].startAt,
       finishAt: timestamps[ix].finishAt,
-      commits: [],
     };
 
     if (sprint.id === activeId) {
       sprint.active = true;
     }
 
+    let sprintCommits = [];
     if (commits.length) {
-      sprint.commits = getHandledTestCommits(commits[ix].config);
+      sprintCommits = getHandledTestCommits(commits[ix].config);
     }
 
-    handledSprintCommitsArray.push(sprint);
+    const item = {
+      sprint,
+      commits: sprintCommits,
+    };
+
+    handledSprintCommitsArray.push(item);
   }
 
   return handledSprintCommitsArray;
