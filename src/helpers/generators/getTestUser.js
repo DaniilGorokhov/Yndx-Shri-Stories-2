@@ -1,5 +1,6 @@
 function getTestUser({
   userId = 1,
+  name = `test username${userId}`,
   friendsQuantity = 0,
   friendsIndexes = [],
   comments = false,
@@ -27,7 +28,7 @@ function getTestUser({
   const user = {
     id: userId,
     type: 'User',
-    name: `test username${userId}`,
+    name,
     login: `testlogin${userId}`,
     avatar: `${userId}.jpg`,
     friends,

@@ -58,6 +58,30 @@ describe('prepareData (entity handling) function tests', () => {
 
       expect(sprints).toHaveLength(1);
     });
+
+    test('save sprint only one time if passed sprints with same id (without rewriting)', () => {
+      const sprint = getTestSprint({
+        name: 'test sprint name1',
+        startAt: 0,
+        finishAt: 604799999,
+      });
+      const sprintAgain = getTestSprint({
+        name: 'test sprint name2',
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      prepareData(
+        [
+          sprint,
+          sprintAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(sprints).toHaveLength(1);
+      expect(sprints[0].name).toBe(sprint.name);
+    });
   });
 
   describe('user entity handling', () => {
@@ -259,6 +283,34 @@ describe('prepareData (entity handling) function tests', () => {
 
       expect(users.size).toBe(2);
     });
+
+    test('save user only one time if passed users with same id (without rewriting)', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const user = getTestUser({
+        userId: 1,
+        name: 'Oleg',
+      });
+      const userAgain = getTestUser({
+        userId: 1,
+        name: 'Kirill',
+      });
+
+      prepareData(
+        [
+          sprint,
+          user,
+          userAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(users.size).toBe(1);
+      expect(users.get(user.id).name).toBe(user.name);
+    });
   });
 
   describe('comment entity handling', () => {
@@ -364,6 +416,39 @@ describe('prepareData (entity handling) function tests', () => {
       expect(likes.size).toBe(1);
       expect(likes.get(199999)).toHaveLength(1);
       expect(likes.get(199999)[0].quantity).toBe(4);
+    });
+
+    test('save likes only one time if passed comments with same id, '
+      + 'but with different likes (without rewriting)', () => {
+      const now = Date.now();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const comment = getTestComment({
+        commentId: '011-x',
+        likes: [1, 2, 3],
+        createdAt: now,
+      });
+      const commentAgain = getTestComment({
+        commentId: '011-x',
+        likes: [1, 2],
+        createdAt: now,
+      });
+
+      prepareData(
+        [
+          sprint,
+          comment,
+          commentAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(likes.size).toBe(1);
+      expect(likes.get(comment.author)).toHaveLength(1);
+      expect(likes.get(comment.author)[0].quantity).toBe(3);
     });
   });
 
@@ -543,7 +628,7 @@ describe('prepareData (entity handling) function tests', () => {
         likes: [user],
       });
       const userWithComment = getTestUser({
-        userId: 1,
+        userId: 2,
         comments: true,
         commentsItems: [comment],
       });
@@ -672,6 +757,34 @@ describe('prepareData (entity handling) function tests', () => {
         timestamp: 1000,
       });
     });
+
+    test('save commit only one time if passed commits with same id (without rewrite)', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const commit = getTestCommit({
+        commitId: '011-x',
+        author: 1,
+      });
+      const commitAgain = getTestCommit({
+        commitId: '011-x',
+        author: 2,
+      });
+
+      prepareData(
+        [
+          sprint,
+          commit,
+          commitAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(commits).toHaveLength(1);
+      expect(commits[0].author).toBe(commit.author);
+    });
   });
 
   describe('summary entity handling', () => {
@@ -736,6 +849,41 @@ describe('prepareData (entity handling) function tests', () => {
       expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4]);
     });
 
+    test('filter summaries in commit.summaries - save only unique summary.id\'s', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const summary1 = getTestSummary({
+        summaryId: 1,
+      });
+      const summary2 = getTestSummary({
+        summaryId: 2,
+      });
+
+      const commit = getTestCommit({
+        summaries: [
+          2,
+          summary1,
+          summary2,
+          1,
+          2,
+        ],
+      });
+
+      prepareData(
+        [
+          sprint,
+          commit,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(commitSummaries.get(commit.id)).toHaveLength(2);
+      expect(commitSummaries.get(commit.id)).toStrictEqual([2, 1]);
+    });
+
     test('save summary, if it is passed unrelated to commit', () => {
       const sprint = getTestSprint({
         startAt: 0,
@@ -758,6 +906,115 @@ describe('prepareData (entity handling) function tests', () => {
       expect(commitSummaries.get(commit.id)).toHaveLength(0);
       expect(commits).toHaveLength(1);
       expect(summaries.size).toBe(1);
+    });
+
+    test('save summary only one time if passed summaries with same id (without rewrite)', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const summary = getTestSummary({
+        summaryId: 1,
+        added: 1000,
+        removed: 500,
+      });
+      const summaryAgain = getTestSummary({
+        summaryId: 1,
+        added: 200,
+        removed: 500,
+      });
+
+      const commit = getTestCommit({
+        summaries: [summary, summaryAgain],
+      });
+
+      prepareData(
+        [
+          sprint,
+          commit,
+        ],
+        { sprintId: 1 },
+      );
+
+      // TODO test for commitSummaries - should save only unique summary ids
+      expect(summaries.size).toBe(1);
+      expect(summaries.get(summary.id).value).toBe(1500);
+      expect(commitSummaries.size).toBe(1);
+    });
+  });
+
+  describe('project entity handling', () => {
+    test('handle project only one time if passed projects with same id', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const commit1 = getTestCommit({
+        commitId: 1,
+      });
+      const commit2 = getTestCommit({
+        commitId: 2,
+      });
+
+      const project = getTestProject({
+        projectId: '011-x',
+        commits: [commit1],
+      });
+      const projectAgain = getTestProject({
+        projectId: '011-x',
+        commits: [commit2],
+      });
+
+      prepareData(
+        [
+          sprint,
+          project,
+          projectAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(commits).toHaveLength(1);
+    });
+  });
+
+  describe('issue entity handling', () => {
+    test('handle issue only one time if passed issues with same id', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const user1 = getTestUser({
+        userId: 1,
+      });
+      const user2 = getTestUser({
+        userId: 2,
+      });
+
+      const issue = getTestIssue({
+        issueId: '34abc',
+        resolvedBy: true,
+        resolvedByUser: user1,
+      });
+      const issueAgain = getTestIssue({
+        issueId: '34abc',
+        resolvedBy: true,
+        resolvedByUser: user2,
+      });
+
+      prepareData(
+        [
+          sprint,
+          issue,
+          issueAgain,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(users.size).toBe(1);
     });
   });
 });

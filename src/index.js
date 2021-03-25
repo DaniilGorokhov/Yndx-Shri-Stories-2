@@ -21,7 +21,7 @@ const { diagramPrepareData } = require('./slidesPrepareData/diagramPrepareData')
 const { activityPrepareData } = require('./slidesPrepareData/activityPrepareData');
 
 function prepareData(entities, { sprintId }) {
-  const types = ['project', 'user', 'issue', 'comment', 'commit', 'summary', 'sprint'];
+  const types = ['Project', 'User', 'Issue', 'Comment', 'Commit', 'Summary', 'Sprint'];
   const uniqStorage = new UniquenessStorage(types);
 
   for (let entityIx = 0; entityIx < entities.length; entityIx += 1) {

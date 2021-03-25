@@ -50,7 +50,7 @@ describe('prepareData (slide data) function tests', () => {
       }));
     }
 
-    const comments = [];
+    const commentsToTest = [];
     for (let commentId = 0; commentId < 20; commentId += 1) {
       let createdAt;
       if (commentId <= 5) {
@@ -80,7 +80,12 @@ describe('prepareData (slide data) function tests', () => {
         likesToTest.push(1);
       }
 
-      comments.push(getTestComment({
+      // Additional 2 likes for user with id 8
+      if (commentId === 8) {
+        likesToTest.push(2, 3);
+      }
+
+      commentsToTest.push(getTestComment({
         commentId: `${commentId}11-x`,
         author,
         createdAt,
@@ -95,7 +100,7 @@ describe('prepareData (slide data) function tests', () => {
         user = getTestUser({
           userId,
           comments: true,
-          commentsItems: comments.slice(10, 15),
+          commentsItems: commentsToTest.slice(10, 15),
         });
       } else if (userId === 0) {
         user = getTestUser({
@@ -117,7 +122,7 @@ describe('prepareData (slide data) function tests', () => {
         summary = getTestSummary({
           summaryId,
           comments: true,
-          commentsItems: [...comments.slice(18, 20), '111-x'],
+          commentsItems: [...commentsToTest.slice(18, 20), '111-x'],
         });
       } else {
         summary = getTestSummary({ summaryId });
@@ -138,7 +143,7 @@ describe('prepareData (slide data) function tests', () => {
       } else if (issueId === 1) {
         issue = getTestIssue({
           issueId: `${issueId}abc`,
-          comments: [...comments.slice(15, 17), '111-x'],
+          comments: [...commentsToTest.slice(15, 17), '111-x'],
         });
       } else {
         issue = getTestIssue({
@@ -188,8 +193,8 @@ describe('prepareData (slide data) function tests', () => {
 
     const entities = [
       ...sprintsToTest,
-      ...comments.slice(0, 10),
-      ...comments.slice(17, 19),
+      ...commentsToTest.slice(0, 10),
+      ...commentsToTest.slice(17, 18),
       ...usersToTest,
       ...summariesToTest,
       ...issuesToTest,
@@ -360,7 +365,6 @@ describe('prepareData (slide data) function tests', () => {
 
     const expectedUsers = getHandledTestUsersWithValues({
       userIds: [
-        // Order related to appearance of users in data
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       ],
       valueTexts: [
@@ -522,7 +526,6 @@ describe('prepareData (slide data) function tests', () => {
     }
 
     const expectedUsers = getHandledTestUsersWithValues({
-      // Order related to appearance of users in data TODO clear
       userIds: [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
       valueTexts: ['2', '2', '2', '2', '2', '1', '1', '1', '1', '1'],
     });

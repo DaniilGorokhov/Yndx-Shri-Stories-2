@@ -38,6 +38,22 @@ describe('getTestUser function tests', () => {
     });
   });
 
+  test('return user with selected user name', () => {
+    const user = getTestUser({ name: 'Oleg' });
+
+    expect(user.name).toBe('Oleg');
+  });
+
+  test('when passed id and name, user.name is passed name (not test name with id)', () => {
+    const user = getTestUser({
+      userId: 2,
+      name: 'Oleg',
+    });
+
+    expect(user.id).toBe(2);
+    expect(user.name).toBe('Oleg');
+  });
+
   test('return user with selected friends quantity', () => {
     const user = getTestUser({ friendsQuantity: 3 });
 
