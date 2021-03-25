@@ -18,6 +18,8 @@ function commitHandler(commit) {
   commits.push(handledCommit);
 
   const currentCommitSummaries = [];
+  const handledSummariesIds = new Set();
+  // TODO tests for unique commit summaries ids
   for (let summaryIx = 0; summaryIx < commit.summaries.length; summaryIx += 1) {
     let newSummaryId;
     if (typeof commit.summaries[summaryIx] === 'object') {
@@ -26,7 +28,11 @@ function commitHandler(commit) {
       newSummaryId = commit.summaries[summaryIx];
     }
 
-    currentCommitSummaries.push(newSummaryId);
+    if (!handledSummariesIds.has(newSummaryId)) {
+      currentCommitSummaries.push(newSummaryId);
+
+      handledSummariesIds.add(newSummaryId);
+    }
   }
 
   commitSummaries.set(commit.id, currentCommitSummaries);

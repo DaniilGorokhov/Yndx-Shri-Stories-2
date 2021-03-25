@@ -39,5 +39,3 @@ if (errorMessages.length) {
 } else {
   console.log('Test OK!');
 }
-
-// TODO fix check

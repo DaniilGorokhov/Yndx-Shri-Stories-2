@@ -365,7 +365,6 @@ describe('prepareData (slide data) function tests', () => {
 
     const expectedUsers = getHandledTestUsersWithValues({
       userIds: [
-        // Order related to appearance of users in data
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       ],
       valueTexts: [
@@ -527,7 +526,6 @@ describe('prepareData (slide data) function tests', () => {
     }
 
     const expectedUsers = getHandledTestUsersWithValues({
-      // Order related to appearance of users in data TODO clear
       userIds: [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
       valueTexts: ['2', '2', '2', '2', '2', '1', '1', '1', '1', '1'],
     });

@@ -849,6 +849,41 @@ describe('prepareData (entity handling) function tests', () => {
       expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4]);
     });
 
+    test('filter summaries in commit.summaries - save only unique summary.id\'s', () => {
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+
+      const summary1 = getTestSummary({
+        summaryId: 1,
+      });
+      const summary2 = getTestSummary({
+        summaryId: 2,
+      });
+
+      const commit = getTestCommit({
+        summaries: [
+          2,
+          summary1,
+          summary2,
+          1,
+          2,
+        ],
+      });
+
+      prepareData(
+        [
+          sprint,
+          commit,
+        ],
+        { sprintId: 1 },
+      );
+
+      expect(commitSummaries.get(commit.id)).toHaveLength(2);
+      expect(commitSummaries.get(commit.id)).toStrictEqual([2, 1]);
+    });
+
     test('save summary, if it is passed unrelated to commit', () => {
       const sprint = getTestSprint({
         startAt: 0,
