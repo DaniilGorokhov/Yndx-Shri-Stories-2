@@ -30,7 +30,7 @@ function sortByProperty({
     }
     if (descending) {
       // convert true into 1 and false into -1
-      return 2 * (value1 > value2) - 1;
+      return 2 * (value2 > value1) - 1;
     }
     // convert true into 1 and false into -1
     return 2 * (value1 > value2) - 1;
