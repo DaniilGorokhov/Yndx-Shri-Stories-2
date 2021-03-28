@@ -55,4 +55,24 @@ describe('sortByProperty function tests', () => {
 
     expect(userLikesArray).toStrictEqual(expectedResult);
   });
+
+  test('sort without parse (to float), if passed withParse as false', () => {
+    const userLikesArray = getHandledTestUsersWithValues({
+      userIds: [3, 2, 1],
+      valueTexts: ['12 голосов', '8 голосов', '10 голосов'],
+    });
+
+    sortByProperty({
+      array: userLikesArray,
+      propertyForSort: 'valueText',
+      withParse: false,
+    });
+
+    const expectedResult = getHandledTestUsersWithValues({
+      userIds: [1, 3, 2],
+      valueTexts: ['10 голосов', '12 голосов', '8 голосов'],
+    });
+
+    expect(userLikesArray).toStrictEqual(expectedResult);
+  });
 });
