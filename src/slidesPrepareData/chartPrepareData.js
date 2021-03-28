@@ -21,7 +21,8 @@ function chartPrepareData(sprintCommitsArray, userCommitsArray, { name }) {
 
   sortByProperty({
     array: values,
-    propertyForSort: 'value',
+    propertyForSort: 'title',
+    withParse: false,
   });
 
   const chartPreparedData = {
