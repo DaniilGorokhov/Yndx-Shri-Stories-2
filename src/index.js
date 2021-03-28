@@ -137,13 +137,31 @@ function prepareData(entities, { sprintId }) {
     throw new Error('error: active sprint did not find');
   }
 
+  const sprintIdsWithoutSort = [];
+  for (let sprintIx = 0; sprintIx < sprints.length; sprintIx += 1) {
+    sprintIdsWithoutSort.push({
+      sprint: { ...sprints[sprintIx] },
+    });
+  }
+
   // chart slide
   sortByProperty({
     array: sprints,
     propertyForSort: 'id',
   });
 
-  const { sprintCommitsArray, activeCommits, previousCommits } = sprintCommits(sprints, commits);
+  const {
+    // TODO delete comment below
+    // eslint-disable-next-line
+    sprintCommitsArray,
+    sprintCommitsMap,
+    activeCommits,
+    previousCommits,
+  } = sprintCommits(sprints, commits);
+  sprintIdsWithoutSort.forEach((sprintCommitsItem, index) => {
+    const currentSprintCommits = sprintCommitsMap.get(sprintCommitsItem.sprint.id) || [];
+    sprintIdsWithoutSort[index].commits = currentSprintCommits;
+  });
 
   // vote slide
   const userCommitsArray = userCommits(users, activeCommits);
@@ -175,7 +193,11 @@ function prepareData(entities, { sprintId }) {
 
   const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint.data);
   const voteSlideData = votePrepareData(userLikesArray, activeSprint.data);
-  const chartSlideData = chartPrepareData(sprintCommitsArray, userCommitsArray, activeSprint.data);
+  const chartSlideData = chartPrepareData(
+    sprintIdsWithoutSort,
+    userCommitsArray,
+    activeSprint.data,
+  );
   const diagramSlideData = diagramPrepareData(
     activeStatistics,
     previousStatistics,
