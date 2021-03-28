@@ -4,7 +4,7 @@ const { getHandledTestCommits } = require('../../generators/handledEntities/getH
 const { getHandledTestSprints } = require('../../generators/handledEntities/getHandledTestSprints');
 
 describe('sprintCommits function tests', () => {
-  test('return object with 3 properties: sprintCommitsArray, '
+  test('return object with 4 properties: sprintCommitsArray, sprintCommitsMap, '
     + 'activeCommits, previousCommits', () => {
     const activeSprint = getHandledTestSprints({
       sprintIds: [1],
@@ -13,7 +13,10 @@ describe('sprintCommits function tests', () => {
     });
     const result = sprintCommits(activeSprint, []);
 
+    // TODO tests for sprintCommitsMap
+    expect(Object.keys(result)).toHaveLength(4);
     expect(result).toHaveProperty('sprintCommitsArray');
+    expect(result).toHaveProperty('sprintCommitsMap');
     expect(result).toHaveProperty('activeCommits');
     expect(result).toHaveProperty('previousCommits');
   });
