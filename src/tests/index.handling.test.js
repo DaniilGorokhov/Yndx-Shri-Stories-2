@@ -937,7 +937,6 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      // TODO test for commitSummaries - should save only unique summary ids
       expect(summaries.size).toBe(1);
       expect(summaries.get(summary.id).value).toBe(1500);
       expect(commitSummaries.size).toBe(1);

@@ -119,11 +119,13 @@ describe('sprintCommits function tests', () => {
       const { sprintCommitsArray } = sprintCommits(sprintsToTest, commitsToTest);
 
       expect(sprintCommitsArray[1]).toStrictEqual({
-        id: sprintsToTest[1].id,
-        name: sprintsToTest[1].name,
+        sprint: {
+          id: sprintsToTest[1].id,
+          name: sprintsToTest[1].name,
+          startAt: sprintsToTest[1].startAt,
+          finishAt: sprintsToTest[1].finishAt,
+        },
         commits: commitsToTest.slice(2, 4),
-        startAt: sprintsToTest[1].startAt,
-        finishAt: sprintsToTest[1].finishAt,
       });
     });
 
@@ -148,7 +150,7 @@ describe('sprintCommits function tests', () => {
 
       const { sprintCommitsArray } = sprintCommits(sprintsToTest, commitsToTest);
 
-      expect(sprintCommitsArray[0]).toHaveProperty('active', true);
+      expect(sprintCommitsArray[0].sprint).toHaveProperty('active', true);
     });
 
     test('sprintCommitsArray item.commits contain entire commits '
@@ -224,7 +226,7 @@ describe('sprintCommits function tests', () => {
       });
 
       const { sprintCommitsArray, activeCommits } = sprintCommits(sprintsToTest, commitsToTest);
-      const activeSprint = sprintCommitsArray.find((sprint) => sprint.active);
+      const activeSprint = sprintCommitsArray.find((item) => item.sprint.active);
 
       expect(activeCommits).toBe(activeSprint.commits);
     });
@@ -383,7 +385,7 @@ describe('sprintCommits function tests', () => {
       });
 
       const { sprintCommitsArray, previousCommits } = sprintCommits(sprintsToTest, commitsToTest);
-      const activeSprintIx = sprintCommitsArray.findIndex((sprint) => sprint.active);
+      const activeSprintIx = sprintCommitsArray.findIndex((item) => item.sprint.active);
       const previousSprint = sprintCommitsArray[activeSprintIx - 1];
 
       expect(previousCommits).toBe(previousSprint.commits);

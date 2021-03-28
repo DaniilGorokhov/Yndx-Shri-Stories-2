@@ -23,15 +23,17 @@ describe('getHandledTestSprintCommits function tests', () => {
     expect(handledSprintCommitsArray).toHaveLength(3);
     for (let ix = 0; ix < 3; ix += 1) {
       const handledSprintCommitsItem = {
-        id: ix,
-        name: `test sprint name${ix}`,
-        startAt: timestamps[ix].startAt,
-        finishAt: timestamps[ix].finishAt,
+        sprint: {
+          id: ix,
+          name: `test sprint name${ix}`,
+          startAt: timestamps[ix].startAt,
+          finishAt: timestamps[ix].finishAt,
+        },
         commits: [],
       };
 
       if (ix === 1) {
-        handledSprintCommitsItem.active = true;
+        handledSprintCommitsItem.sprint.active = true;
       }
 
       expect(handledSprintCommitsArray[ix]).toStrictEqual(handledSprintCommitsItem);
