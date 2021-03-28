@@ -535,7 +535,7 @@ describe('prepareData (slide data) function tests', () => {
       data: {
         title: 'Коммиты',
         subtitle: sprintsToTest[1].name,
-        values: [expectedValues[1], expectedValues[0], ...expectedValues.slice(2)],
+        values: [expectedValues[0], ...expectedValues.slice(2), expectedValues[1]],
         users: expectedUsers,
       },
     });
