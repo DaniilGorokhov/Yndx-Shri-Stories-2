@@ -22,7 +22,6 @@ function chartPrepareData(sprintCommitsArray, userCommitsArray, { name }) {
   sortByProperty({
     array: values,
     propertyForSort: 'hint',
-    descending: true,
     withParse: false,
   });
 
