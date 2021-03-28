@@ -72,7 +72,7 @@ describe('prepareData (slide data) function tests', () => {
       if (commentId === 1) {
         likesToTest.push(getTestUser({ userId: 11 }));
       } else {
-        likesToTest.push(1);
+        likesToTest.push(0);
       }
       if (commentId === 10) {
         likesToTest.push(getTestUser({ userId: 20 }));

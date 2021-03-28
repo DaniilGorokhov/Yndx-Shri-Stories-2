@@ -47,7 +47,7 @@ function sprintCommits(sprints, commits) {
   for (let sprintIx = 0; sprintIx < sprints.length; sprintIx += 1) {
     const sprint = sprints[sprintIx];
     const sprintCommitsItem = {
-      // Here we do not copy sprint
+      // Here we do not copy sprint, only copy reference to object
       sprint,
       commits: [],
     };
