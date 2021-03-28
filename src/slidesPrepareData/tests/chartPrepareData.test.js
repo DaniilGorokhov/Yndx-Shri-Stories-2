@@ -81,14 +81,14 @@ describe('chartPrepareData function tests', () => {
     expect(data.values).toHaveLength(2);
 
     expect(Object.keys(data.values[0])).toHaveLength(3);
-    expect(data.values[0]).toHaveProperty('title', '2');
-    expect(data.values[0]).toHaveProperty('hint', 'test sprint name2');
-    expect(data.values[0]).toHaveProperty('value', 1);
+    expect(data.values[0]).toHaveProperty('title', '1');
+    expect(data.values[0]).toHaveProperty('hint', 'test sprint name1');
+    expect(data.values[0]).toHaveProperty('value', 2);
 
     expect(Object.keys(data.values[1])).toHaveLength(3);
-    expect(data.values[1]).toHaveProperty('title', '1');
-    expect(data.values[1]).toHaveProperty('hint', 'test sprint name1');
-    expect(data.values[1]).toHaveProperty('value', 2);
+    expect(data.values[1]).toHaveProperty('title', '2');
+    expect(data.values[1]).toHaveProperty('hint', 'test sprint name2');
+    expect(data.values[1]).toHaveProperty('value', 1);
   });
 
   test('add active property to item of returned object.data.values '
@@ -131,8 +131,8 @@ describe('chartPrepareData function tests', () => {
 
     expect(data.values).toHaveLength(2);
 
-    expect(Object.keys(data.values[1])).toStrictEqual(['title', 'hint', 'value', 'active']);
-    expect(data.values[1]).toHaveProperty('active', true);
+    expect(Object.keys(data.values[0])).toStrictEqual(['title', 'hint', 'value', 'active']);
+    expect(data.values[0]).toHaveProperty('active', true);
   });
 
   test('do not change passed values', () => {
