@@ -16,6 +16,7 @@ function sortByProperty({
     }
 
     if (value1 === value2) {
+      if (!withParse) return 0;
       if (descending) {
         return item1.id - item2.id;
       }
