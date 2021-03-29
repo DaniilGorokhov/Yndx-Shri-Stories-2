@@ -1,11 +1,13 @@
-const { likes, commentHandler } = require('../commentHandler');
+const { commentHandler } = require('../commentHandler');
 
 const { getTestComment } = require('../../helpers/generators/getTestComment');
 const { getTestUser } = require('../../helpers/generators/getTestUser');
 
+const likesStorage = new Map();
+
 afterEach(() => {
-  likes.forEach((value, key) => {
-    likes.delete(key);
+  likesStorage.forEach((value, key) => {
+    likesStorage.delete(key);
   });
 });
 
@@ -14,29 +16,29 @@ describe('commentHandler function tests', () => {
     test('add likes entity as array for author as user.id', () => {
       const comment = getTestComment();
 
-      commentHandler(comment);
+      commentHandler(comment, likesStorage);
 
       expect(comment.author).toBe(1);
-      expect(likes.get(comment.author)).toBeInstanceOf(Array);
+      expect(likesStorage.get(comment.author)).toBeInstanceOf(Array);
     });
 
     test('add likes entry as array for author as user entity', () => {
       const author = getTestUser();
       const comment = getTestComment({ author });
 
-      commentHandler(comment);
+      commentHandler(comment, likesStorage);
 
       expect(comment.author).toStrictEqual(author);
-      expect(likes.get(comment.author.id)).toBeInstanceOf(Array);
+      expect(likesStorage.get(comment.author.id)).toBeInstanceOf(Array);
     });
 
     test('likes entry is array of objects with two property: timestamp, quantity', () => {
       const comment = getTestComment({ likes: [2, 3] });
 
-      commentHandler(comment);
+      commentHandler(comment, likesStorage);
 
-      expect(likes.get(comment.author)[0]).toHaveProperty('timestamp');
-      expect(likes.get(comment.author)[0]).toHaveProperty('quantity');
+      expect(likesStorage.get(comment.author)[0]).toHaveProperty('timestamp');
+      expect(likesStorage.get(comment.author)[0]).toHaveProperty('quantity');
     });
 
     test('count likes for comment and add in property quantity '
@@ -48,9 +50,9 @@ describe('commentHandler function tests', () => {
 
       const comment = getTestComment({ likes: likesForComment });
 
-      commentHandler(comment);
+      commentHandler(comment, likesStorage);
 
-      expect(likes.get(comment.author)[0].quantity).toBe(2);
+      expect(likesStorage.get(comment.author)[0].quantity).toBe(2);
     });
 
     test('timestamp of likes item is same to comment timestamp '
@@ -58,9 +60,9 @@ describe('commentHandler function tests', () => {
       const now = Date.now();
       const comment = getTestComment({ likes: [2, 3], createdAt: now });
 
-      commentHandler(comment);
+      commentHandler(comment, likesStorage);
 
-      expect(likes.get(comment.author)[0].timestamp).toBe(now);
+      expect(likesStorage.get(comment.author)[0].timestamp).toBe(now);
     });
 
     test('add several likes entries '
@@ -70,12 +72,12 @@ describe('commentHandler function tests', () => {
       const comment1 = getTestComment({ author: author1, likes: [3, 4] });
       const comment2 = getTestComment({ author: author2, likes: [3, 4, 5] });
 
-      commentHandler(comment1);
-      commentHandler(comment2);
+      commentHandler(comment1, likesStorage);
+      commentHandler(comment2, likesStorage);
 
-      expect(likes.size).toBe(2);
-      expect(likes.get(comment1.author.id)[0].quantity).toBe(2);
-      expect(likes.get(comment2.author.id)[0].quantity).toBe(3);
+      expect(likesStorage.size).toBe(2);
+      expect(likesStorage.get(comment1.author.id)[0].quantity).toBe(2);
+      expect(likesStorage.get(comment2.author.id)[0].quantity).toBe(3);
     });
 
     test('add several likes items in only one likes entry without rewrite '
@@ -83,13 +85,13 @@ describe('commentHandler function tests', () => {
       const comment1 = getTestComment({ likes: [3, 4] });
       const comment2 = getTestComment({ likes: [3, 4, 5] });
 
-      commentHandler(comment1);
-      commentHandler(comment2);
+      commentHandler(comment1, likesStorage);
+      commentHandler(comment2, likesStorage);
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(comment1.author)).toHaveLength(2);
-      expect(likes.get(comment1.author)[0].quantity).toBe(2);
-      expect(likes.get(comment1.author)[1].quantity).toBe(3);
+      expect(likesStorage.size).toBe(1);
+      expect(likesStorage.get(comment1.author)).toHaveLength(2);
+      expect(likesStorage.get(comment1.author)[0].quantity).toBe(2);
+      expect(likesStorage.get(comment1.author)[1].quantity).toBe(3);
     });
   });
 });

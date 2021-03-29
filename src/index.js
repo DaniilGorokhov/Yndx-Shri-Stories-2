@@ -1,11 +1,12 @@
 const { LinkedList } = require('./helpers/mainFlow/LinkedList');
 const { UniquenessStorage } = require('./helpers/mainFlow/UniquenessStorage');
+const { Storage } = require('./helpers/mainFlow/Storage');
 
-const { users, userHandler } = require('./entityHandlers/userHandler');
-const { likes, commentHandler } = require('./entityHandlers/commentHandler');
-const { sprints, activeSprint, sprintHandler } = require('./entityHandlers/sprintHandler');
-const { commits, commitSummaries, commitHandler } = require('./entityHandlers/commitHandler');
-const { summaries, summaryHandler } = require('./entityHandlers/summaryHandler');
+const { userHandler } = require('./entityHandlers/userHandler');
+const { commentHandler } = require('./entityHandlers/commentHandler');
+const { commitHandler } = require('./entityHandlers/commitHandler');
+const { sprintHandler } = require('./entityHandlers/sprintHandler');
+const { summaryHandler } = require('./entityHandlers/summaryHandler');
 
 const { userLikes } = require('./helpers/dataHandlers/userLikes');
 const { sortByProperty } = require('./helpers/dataHandlers/sortByProperty');
@@ -21,6 +22,8 @@ const { diagramPrepareData } = require('./slidesPrepareData/diagramPrepareData')
 const { activityPrepareData } = require('./slidesPrepareData/activityPrepareData');
 
 function prepareData(entities, { sprintId }) {
+  const storage = new Storage();
+
   const types = ['Project', 'User', 'Issue', 'Comment', 'Commit', 'Summary', 'Sprint'];
   const uniqStorage = new UniquenessStorage(types);
 
@@ -31,12 +34,12 @@ function prepareData(entities, { sprintId }) {
 
     while (linkedListIns.entities !== null) {
       const currentEntity = linkedListIns.entities.data;
-
       const { type } = currentEntity;
+
       if (!uniqStorage.has(type, currentEntity.id)) {
         switch (type) {
           case 'User':
-            userHandler(currentEntity);
+            userHandler(currentEntity, storage.users);
 
             linkedListIns.handleProperty({
               property: 'friends',
@@ -56,7 +59,7 @@ function prepareData(entities, { sprintId }) {
 
             break;
           case 'Comment':
-            commentHandler(currentEntity);
+            commentHandler(currentEntity, storage.likes);
 
             linkedListIns.handleProperty({
               property: 'author',
@@ -69,7 +72,7 @@ function prepareData(entities, { sprintId }) {
 
             break;
           case 'Commit':
-            commitHandler(currentEntity);
+            commitHandler(currentEntity, storage.commits, storage.commitSummaries);
 
             linkedListIns.handleProperty({
               property: 'author',
@@ -95,7 +98,7 @@ function prepareData(entities, { sprintId }) {
 
             break;
           case 'Summary':
-            summaryHandler(currentEntity);
+            summaryHandler(currentEntity, storage.summaries);
 
             if (currentEntity.comments) {
               linkedListIns.handleProperty({
@@ -105,7 +108,7 @@ function prepareData(entities, { sprintId }) {
 
             break;
           case 'Sprint':
-            sprintHandler(currentEntity, sprintId);
+            sprintHandler(currentEntity, sprintId, storage.sprints, storage.activeSprint);
 
             break;
           case 'Project':
@@ -125,21 +128,21 @@ function prepareData(entities, { sprintId }) {
           default:
             throw new Error('error: type of entity is invalid');
         }
-
-        uniqStorage.add(type, currentEntity.id);
       }
+
+      uniqStorage.add(type, currentEntity.id);
 
       linkedListIns.next();
     }
   }
 
-  if (typeof activeSprint.data === 'undefined') {
+  if (typeof storage.activeSprint.data === 'undefined') {
     throw new Error('error: active sprint did not find');
   }
 
   // chart slide
   sortByProperty({
-    array: sprints,
+    array: storage.sprints,
     propertyForSort: 'id',
   });
 
@@ -147,10 +150,10 @@ function prepareData(entities, { sprintId }) {
     sprintCommitsArray,
     activeCommits,
     previousCommits,
-  } = sprintCommits(sprints, commits);
+  } = sprintCommits(storage.sprints, storage.commits);
 
   // vote slide
-  const userCommitsArray = userCommits(users, activeCommits);
+  const userCommitsArray = userCommits(storage.users, activeCommits);
   sortByProperty({
     array: userCommitsArray,
     propertyForSort: 'valueText',
@@ -158,7 +161,7 @@ function prepareData(entities, { sprintId }) {
   });
 
   // leaders slide
-  const userLikesArray = userLikes(users, likes, activeSprint.data);
+  const userLikesArray = userLikes(storage.users, storage.likes, storage.activeSprint.data);
   sortByProperty({
     array: userLikesArray,
     propertyForSort: 'valueText',
@@ -170,28 +173,28 @@ function prepareData(entities, { sprintId }) {
     activeStatistics, previousStatistics,
   ] = computeStatistics({
     sprints: [activeCommits, previousCommits],
-    summaries,
-    commitSummaries,
+    summaries: storage.summaries,
+    commitSummaries: storage.commitSummaries,
   });
 
   // activity slide
   const heatMapData = computeHeatMap(activeCommits);
 
-  const leadersSlideData = leadersPrepareData(userCommitsArray, activeSprint.data);
-  const voteSlideData = votePrepareData(userLikesArray, activeSprint.data);
+  const leadersSlideData = leadersPrepareData(userCommitsArray, storage.activeSprint.data);
+  const voteSlideData = votePrepareData(userLikesArray, storage.activeSprint.data);
   const chartSlideData = chartPrepareData(
     sprintCommitsArray,
     userCommitsArray,
-    activeSprint.data,
+    storage.activeSprint.data,
   );
   const diagramSlideData = diagramPrepareData(
     activeStatistics,
     previousStatistics,
-    activeSprint.data,
+    storage.activeSprint.data,
     activeCommits.length,
     previousCommits.length,
   );
-  const activitySlideData = activityPrepareData(heatMapData, activeSprint.data);
+  const activitySlideData = activityPrepareData(heatMapData, storage.activeSprint.data);
 
   const slides = [
     leadersSlideData,

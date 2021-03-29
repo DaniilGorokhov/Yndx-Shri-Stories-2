@@ -1,9 +1,4 @@
 const { prepareData } = require('../index');
-const { users } = require('../entityHandlers/userHandler');
-const { likes } = require('../entityHandlers/commentHandler');
-const { sprints, activeSprint } = require('../entityHandlers/sprintHandler');
-const { commits, commitSummaries } = require('../entityHandlers/commitHandler');
-const { summaries } = require('../entityHandlers/summaryHandler');
 
 const { getTestUser } = require('../helpers/generators/getTestUser');
 const { getTestComment } = require('../helpers/generators/getTestComment');
@@ -12,32 +7,6 @@ const { getTestIssue } = require('../helpers/generators/getTestIssue');
 const { getTestSummary } = require('../helpers/generators/getTestSummary');
 const { getTestSprint } = require('../helpers/generators/getTestSprint');
 const { getTestProject } = require('../helpers/generators/getTestProject');
-
-const {
-  getHandledTestCommits,
-} = require('../helpers/generators/handledEntities/getHandledTestCommits');
-
-afterEach(() => {
-  users.forEach((value, key) => {
-    users.delete(key);
-  });
-
-  likes.forEach((value, key) => {
-    likes.delete(key);
-  });
-
-  while (sprints.length) sprints.pop();
-  delete activeSprint.data;
-
-  while (commits.length) commits.pop();
-  commitSummaries.forEach((value, key) => {
-    commitSummaries.delete(key);
-  });
-
-  summaries.forEach((value, key) => {
-    summaries.delete(key);
-  });
-});
 
 describe('prepareData (entity handling) function tests', () => {
   test('throw error if entity type is invalid', () => {
@@ -50,13 +19,22 @@ describe('prepareData (entity handling) function tests', () => {
     expect(() => prepareData([], { sprintId: 1 })).toThrow('error: active sprint did not find');
   });
 
+  test('return same result if function called a number of times', () => {
+    const sprint = getTestSprint();
+
+    const result1 = prepareData([sprint], { sprintId: 1 });
+    const result2 = prepareData([sprint], { sprintId: 1 });
+
+    expect(result1).toStrictEqual(result2);
+  });
+
   describe('sprint entity handling', () => {
     test('save sprint when passed entity with type Sprint', () => {
       const sprint = getTestSprint();
 
-      prepareData([sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([sprint], { sprintId: 1 });
 
-      expect(sprints).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values).toHaveLength(1);
     });
 
     test('save sprint only one time if passed sprints with same id (without rewriting)', () => {
@@ -71,7 +49,7 @@ describe('prepareData (entity handling) function tests', () => {
         finishAt: 604799999,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           sprintAgain,
@@ -79,8 +57,8 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(sprints).toHaveLength(1);
-      expect(sprints[0].name).toBe(sprint.name);
+      expect(slidesPreparedData[2].data.values).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values[0].hint).toBe(sprint.name);
     });
   });
 
@@ -89,8 +67,9 @@ describe('prepareData (entity handling) function tests', () => {
       const sprint = getTestSprint();
       const user = getTestUser();
 
-      prepareData([user, sprint], { sprintId: 1 });
-      expect(users.size).toBe(1);
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
+
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
     });
 
     test('save users when they deep nested by property friends', () => {
@@ -104,9 +83,9 @@ describe('prepareData (entity handling) function tests', () => {
         currentUser = newUser;
       }
 
-      prepareData([user, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(200000);
+      expect(slidesPreparedData[1].data.users).toHaveLength(200000);
     });
 
     test('save user when passed entity with type Comment with property author', () => {
@@ -114,18 +93,18 @@ describe('prepareData (entity handling) function tests', () => {
       const author = getTestUser();
       const comment = getTestComment({ author });
 
-      prepareData([comment, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([comment, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(1);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
     });
 
     test('do not save comment.author as user if comment.author is user.id', () => {
       const sprint = getTestSprint();
       const comment = getTestComment();
 
-      prepareData([comment, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([comment, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(0);
+      expect(slidesPreparedData[1].data.users).toHaveLength(0);
     });
 
     test('save users from comment.likes', () => {
@@ -138,9 +117,9 @@ describe('prepareData (entity handling) function tests', () => {
 
       const comment = getTestComment({ likes: likesForComment });
 
-      prepareData([comment, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([comment, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(3);
+      expect(slidesPreparedData[1].data.users).toHaveLength(3);
     });
 
     test('do not save user from comment.likes if it is user.id', () => {
@@ -149,9 +128,9 @@ describe('prepareData (entity handling) function tests', () => {
         likes: [2, 3, 4],
       });
 
-      prepareData([comment, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([comment, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(0);
+      expect(slidesPreparedData[1].data.users).toHaveLength(0);
     });
 
     test('save commit.author as user if it is user entity', () => {
@@ -162,9 +141,9 @@ describe('prepareData (entity handling) function tests', () => {
       const author = getTestUser();
       const commit = getTestCommit({ author });
 
-      prepareData([commit, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([commit, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(1);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
     });
 
     test('do not save commit.author as user if commit.author is user.id', () => {
@@ -174,18 +153,18 @@ describe('prepareData (entity handling) function tests', () => {
       });
       const commit = getTestCommit();
 
-      prepareData([commit, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([commit, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(0);
+      expect(slidesPreparedData[1].data.users).toHaveLength(0);
     });
 
     test('do not save user if issue has not resolvedBy property', () => {
       const sprint = getTestSprint();
       const issue = getTestIssue();
 
-      prepareData([issue, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([issue, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(0);
+      expect(slidesPreparedData[1].data.users).toHaveLength(0);
     });
 
     test('save issue.resolvedBy as user if resolvedByUser is user entity', () => {
@@ -196,9 +175,9 @@ describe('prepareData (entity handling) function tests', () => {
         resolvedByUser: user,
       });
 
-      prepareData([issue, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([issue, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(1);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
     });
 
     test('ignore issue.resolvedBy if issue.resolvedBy is user.id', () => {
@@ -207,9 +186,9 @@ describe('prepareData (entity handling) function tests', () => {
         resolvedBy: true,
       });
 
-      prepareData([issue, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([issue, sprint], { sprintId: 1 });
 
-      expect(users.size).toBe(0);
+      expect(slidesPreparedData[1].data.users).toHaveLength(0);
     });
 
     test('save users if passed commit with author as '
@@ -237,7 +216,7 @@ describe('prepareData (entity handling) function tests', () => {
         author: userWithComment,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           commitWithAuthor,
@@ -245,7 +224,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(users.size).toBe(2);
+      expect(slidesPreparedData[1].data.users).toHaveLength(2);
     });
 
     test('save users if passed issue with resolvedBy as '
@@ -273,7 +252,7 @@ describe('prepareData (entity handling) function tests', () => {
         resolvedByUser: userWithComment,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           issue,
@@ -281,7 +260,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(users.size).toBe(2);
+      expect(slidesPreparedData[1].data.users).toHaveLength(2);
     });
 
     test('save user only one time if passed users with same id (without rewriting)', () => {
@@ -299,7 +278,7 @@ describe('prepareData (entity handling) function tests', () => {
         name: 'Kirill',
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           user,
@@ -308,94 +287,121 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(users.size).toBe(1);
-      expect(users.get(user.id).name).toBe(user.name);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
+      expect(slidesPreparedData[1].data.users[0].name).toBe(user.name);
     });
   });
 
   describe('comment entity handling', () => {
     test('save likes if passed entity with type Comment', () => {
-      const sprint = getTestSprint();
-      const comment = getTestComment({ likes: [2, 3, 4] });
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 604799999,
+      });
+      const comment = getTestComment({ likes: [2, 3, 4], createdAt: 1000 });
+      const author = getTestUser();
 
-      prepareData([comment, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([comment, author, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(comment.author)).toHaveLength(1);
-      expect(likes.get(comment.author)[0].quantity).toBe(3);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(3);
+      expect(slidesPreparedData[1].data.users[0].id).toBe(author.id);
     });
 
     test('save likes if passed entity with type User with non-empty property comments', () => {
-      const sprint = getTestSprint();
-      const comment = getTestComment({ likes: [2] });
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
+      const comment = getTestComment({ likes: [2], createdAt: 1000 });
       const user = getTestUser({ comments: true, commentsItems: [comment] });
 
-      prepareData([user, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(user.id)).toHaveLength(1);
-      expect(likes.get(user.id)[0].quantity).toBe(1);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(1);
+      expect(slidesPreparedData[1].data.users[0].id).toBe(user.id);
     });
 
     test('do not save likes if passed entity with type User without property comments', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
       const user = getTestUser();
 
-      prepareData([user, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(0);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(0);
     });
 
     test('save likes if passed entity with type Issue with non-empty property comments', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
       const comments = [];
       for (let commentId = 1; commentId < 4; commentId += 1) {
-        comments.push(getTestComment({ commentId: `${commentId}1112222-3333-4444-5555-666677778888` }));
+        comments.push(getTestComment({
+          commentId: `${commentId}11-x`,
+          createdAt: 1000,
+          likes: [1],
+        }));
       }
       const issue = getTestIssue({ comments });
+      const user = getTestUser();
 
-      prepareData([issue, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, issue, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      // 1 below is a user.id of author of comments
-      expect(likes.get(1)).toHaveLength(3);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(3);
     });
 
     test('save likes if passed entity with type Summary with comments', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
       const comments = [];
       for (let commentId = 1; commentId < 4; commentId += 1) {
-        comments.push(getTestComment({ commentId: `${commentId}1112222-3333-4444-5555-666677778888` }));
+        comments.push(getTestComment({
+          commentId: `${commentId}11-x`,
+          createdAt: 1000,
+          likes: [1],
+        }));
       }
       const summary = getTestSummary({ comments: true, commentsItems: comments });
+      const user = getTestUser();
 
-      prepareData([summary, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([summary, user, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      // 1 below is a user.id of author of comments
-      expect(likes.get(1)).toHaveLength(3);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(3);
     });
 
     test('save likes from comment, that in issue, which passed as property of project entity', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
       const likesToTest = [1, 2, 3, 4, 5];
-      const comment = getTestComment({ likesToTest });
+      const comment = getTestComment({ createdAt: 1000, likes: likesToTest });
       const issue = getTestIssue({ comments: [comment] });
       const project = getTestProject({ issues: [issue] });
+      const user = getTestUser();
 
-      prepareData([project, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, project, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(1)).toHaveLength(1);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(5);
     });
 
     test('save likes from comment, that is contained in user.comments, '
       + 'when user is deep in friends property of others users', () => {
-      const sprint = getTestSprint();
+      const sprint = getTestSprint({
+        startAt: 0,
+        finishAt: 60479999,
+      });
 
       const comment = getTestComment({
         author: 199999,
         likes: [0, 1, 2, 3],
+        createdAt: 1000,
       });
 
       const user = getTestUser({ userId: 0 });
@@ -411,16 +417,14 @@ describe('prepareData (entity handling) function tests', () => {
         }
       }
 
-      prepareData([user, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(199999)).toHaveLength(1);
-      expect(likes.get(199999)[0].quantity).toBe(4);
+      expect(slidesPreparedData[1].data.users).toHaveLength(200000);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(4);
     });
 
     test('save likes only one time if passed comments with same id, '
       + 'but with different likes (without rewriting)', () => {
-      const now = Date.now();
       const sprint = getTestSprint({
         startAt: 0,
         finishAt: 604799999,
@@ -429,54 +433,53 @@ describe('prepareData (entity handling) function tests', () => {
       const comment = getTestComment({
         commentId: '011-x',
         likes: [1, 2, 3],
-        createdAt: now,
+        createdAt: 1000,
       });
       const commentAgain = getTestComment({
         commentId: '011-x',
         likes: [1, 2],
-        createdAt: now,
+        createdAt: 1000,
       });
 
-      prepareData(
+      const user = getTestUser();
+
+      const slidesPreparedData = prepareData(
         [
           sprint,
           comment,
           commentAgain,
+          user,
         ],
         { sprintId: 1 },
       );
 
-      expect(likes.size).toBe(1);
-      expect(likes.get(comment.author)).toHaveLength(1);
-      expect(likes.get(comment.author)[0].quantity).toBe(3);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
+      expect(parseInt(slidesPreparedData[1].data.users[0].valueText, 10)).toBe(3);
     });
   });
 
   describe('commit entity handling', () => {
     test('save commits if passed entities with type Commit', () => {
-      const now = Date.now();
       const sprint = getTestSprint({
         startAt: 0,
         finishAt: 604799999,
       });
 
-      const commit1 = getTestCommit({ commitId: '111-x', timestamp: now });
+      const commit1 = getTestCommit({ commitId: '111-x', timestamp: 1000 });
 
       const author = getTestUser();
-      const commit2 = getTestCommit({ commitId: '211-x', author, timestamp: now });
+      const commit2 = getTestCommit({ commitId: '211-x', author, timestamp: 1000 });
 
-      const commit3 = getTestCommit({ commitId: '311-x', author: 2, timestamp: now });
+      const commit3 = getTestCommit({ commitId: '311-x', author: 2, timestamp: 1000 });
 
-      prepareData([commit1, commit2, commit3, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([
+        commit1,
+        commit2,
+        commit3,
+        sprint,
+      ], { sprintId: 1 });
 
-      const expectedResult = getHandledTestCommits({
-        commitIds: ['111-x', '211-x', '311-x'],
-        authorIds: [1, 1, 2],
-        timestamps: [now, now, now],
-      });
-
-      expect(commits).toHaveLength(3);
-      expect(commits).toStrictEqual(expectedResult);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(3);
     });
 
     test('save commits if passed entity with type User with property commits', () => {
@@ -485,32 +488,23 @@ describe('prepareData (entity handling) function tests', () => {
         finishAt: 604799999,
       });
 
-      const now = Date.now();
       const commitsToTest = [];
       for (let commitIx = 0; commitIx < 5; commitIx += 1) {
         commitsToTest.push(getTestCommit({
           commitId: `${commitIx}11-x`,
           author: 1,
-          timestamp: now,
+          timestamp: 1000,
         }));
       }
 
       const user = getTestUser({ commits: true, commitsItems: commitsToTest });
 
-      prepareData([user, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([user, sprint], { sprintId: 1 });
 
-      expect(commits).toHaveLength(5);
-      for (let commitIx = 0; commitIx < 5; commitIx += 1) {
-        expect(commits[commitIx]).toStrictEqual({
-          id: `${commitIx}11-x`,
-          author: 1,
-          timestamp: now,
-        });
-      }
+      expect(slidesPreparedData[2].data.values[0].value).toBe(5);
     });
 
     test('save commits if passed entity with type Project with property commits', () => {
-      const now = Date.now();
       const sprint = getTestSprint({
         startAt: 0,
         finishAt: 604799999,
@@ -519,20 +513,14 @@ describe('prepareData (entity handling) function tests', () => {
       for (let commitIx = 0; commitIx < 5; commitIx += 1) {
         commitsToTest.push(getTestCommit({
           commitId: `${commitIx}11-x`,
-          timestamp: now,
+          timestamp: 1000,
         }));
       }
       const project = getTestProject({ commits: commitsToTest });
-      const expectedCommits = getHandledTestCommits({
-        commitIds: ['011-x', '111-x', '211-x', '311-x', '411-x'],
-        authorIds: [1, 1, 1, 1, 1],
-        timestamps: [now, now, now, now, now],
-      });
 
-      prepareData([project, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([project, sprint], { sprintId: 1 });
 
-      expect(commits).toHaveLength(5);
-      expect(commits).toStrictEqual(expectedCommits);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(5);
     });
 
     test('save commits of passed entity with type User '
@@ -555,6 +543,7 @@ describe('prepareData (entity handling) function tests', () => {
           newUser.commits = [
             getTestCommit({
               commitId: id,
+              timestamp: 1000,
             }),
           ];
         }
@@ -563,7 +552,7 @@ describe('prepareData (entity handling) function tests', () => {
         currentUser = newUser;
       }
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           user,
@@ -571,7 +560,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(50000);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(50000);
     });
 
     test('save commits if passed project with issue with comment '
@@ -581,7 +570,9 @@ describe('prepareData (entity handling) function tests', () => {
         finishAt: 604799999,
       });
 
-      const commit = getTestCommit();
+      const commit = getTestCommit({
+        timestamp: 1000,
+      });
       const user = getTestUser({
         userId: 0,
         commits: true,
@@ -601,7 +592,7 @@ describe('prepareData (entity handling) function tests', () => {
         issues: [issue],
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           project,
           sprint,
@@ -609,7 +600,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
 
     test('save commit if passed user with comment with likes with user, who has commit', () => {
@@ -618,7 +609,9 @@ describe('prepareData (entity handling) function tests', () => {
         finishAt: 604799999,
       });
 
-      const commit = getTestCommit();
+      const commit = getTestCommit({
+        timestamp: 1000,
+      });
       const user = getTestUser({
         userId: 1,
         commits: true,
@@ -633,7 +626,7 @@ describe('prepareData (entity handling) function tests', () => {
         commentsItems: [comment],
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           userWithComment,
@@ -641,7 +634,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
 
     test('save commits if passed commit with author as '
@@ -653,6 +646,7 @@ describe('prepareData (entity handling) function tests', () => {
 
       const commit = getTestCommit({
         commitId: '011-x',
+        timestamp: 1000,
       });
       const user = getTestUser({
         userId: 0,
@@ -670,9 +664,10 @@ describe('prepareData (entity handling) function tests', () => {
       const commitWithAuthor = getTestCommit({
         commitId: '111-x',
         author: userWithComment,
+        timestamp: 1000,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           commitWithAuthor,
@@ -680,7 +675,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(2);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(2);
     });
 
     test('save commits if passed issue with resolvedBy as '
@@ -690,7 +685,9 @@ describe('prepareData (entity handling) function tests', () => {
         finishAt: 604799999,
       });
 
-      const commit = getTestCommit();
+      const commit = getTestCommit({
+        timestamp: 1000,
+      });
       const user = getTestUser({
         userId: 0,
         commits: true,
@@ -709,7 +706,7 @@ describe('prepareData (entity handling) function tests', () => {
         resolvedByUser: userWithComment,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           issue,
@@ -717,7 +714,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
 
     test('save commit if passed entity with type Project '
@@ -748,14 +745,9 @@ describe('prepareData (entity handling) function tests', () => {
         }
       }
 
-      prepareData([...projectsToTest, sprint], { sprintId: 1 });
+      const slidesPreparedData = prepareData([...projectsToTest, sprint], { sprintId: 1 });
 
-      expect(commits).toHaveLength(1);
-      expect(commits[0]).toStrictEqual({
-        id: '011-x',
-        author: 1,
-        timestamp: 1000,
-      });
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
 
     test('save commit only one time if passed commits with same id (without rewrite)', () => {
@@ -767,13 +759,15 @@ describe('prepareData (entity handling) function tests', () => {
       const commit = getTestCommit({
         commitId: '011-x',
         author: 1,
+        timestamp: 1000,
       });
       const commitAgain = getTestCommit({
         commitId: '011-x',
         author: 2,
+        timestamp: 704799999,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           commit,
@@ -782,8 +776,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(1);
-      expect(commits[0].author).toBe(commit.author);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
   });
 
@@ -793,15 +786,17 @@ describe('prepareData (entity handling) function tests', () => {
         startAt: 0,
         finishAt: 604799999,
       });
+
+      const commit = getTestCommit({
+        summaries: [1],
+        timestamp: 1000,
+      });
+
       const summary = getTestSummary();
 
-      prepareData([sprint, summary], { sprintId: 1 });
+      const slidesPreparedData = prepareData([commit, sprint, summary], { sprintId: 1 });
 
-      expect(summaries.size).toBe(1);
-      expect(summaries.get(summary.id)).toStrictEqual({
-        id: summary.id,
-        value: summary.added + summary.removed,
-      });
+      expect(parseInt(slidesPreparedData[3].data.totalText, 10)).toBe(1);
     });
 
     test('save summary if passed entity with type Commit with properties summaries', () => {
@@ -811,17 +806,15 @@ describe('prepareData (entity handling) function tests', () => {
       });
 
       const summary = getTestSummary();
+
       const commit = getTestCommit({
         summaries: [summary],
+        timestamp: 1000,
       });
 
-      prepareData([sprint, commit], { sprintId: 1 });
+      const slidesPreparedData = prepareData([sprint, commit], { sprintId: 1 });
 
-      expect(summaries.size).toBe(1);
-      expect(summaries.get(summary.id)).toStrictEqual({
-        id: summary.id,
-        value: summary.added + summary.removed,
-      });
+      expect(parseInt(slidesPreparedData[3].data.totalText, 10)).toBe(1);
     });
 
     test('wire summary.id and commit.id '
@@ -835,6 +828,8 @@ describe('prepareData (entity handling) function tests', () => {
       for (let summaryId = 0; summaryId < 5; summaryId += 1) {
         const summary = getTestSummary({
           summaryId,
+          added: 21,
+          removed: 0,
         });
 
         summariesToTest.push(summary);
@@ -842,11 +837,16 @@ describe('prepareData (entity handling) function tests', () => {
 
       const commit = getTestCommit({
         summaries: summariesToTest,
+        timestamp: 1000,
       });
 
-      prepareData([sprint, commit], { sprintId: 1 });
+      const slidesPreparedData = prepareData([sprint, commit], { sprintId: 1 });
+      const receivedDiagramMidValue = parseInt(
+        slidesPreparedData[3].data.categories[2].valueText,
+        10,
+      );
 
-      expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4]);
+      expect(receivedDiagramMidValue).toBe(1);
     });
 
     test('filter summaries in commit.summaries - save only unique summary.id\'s', () => {
@@ -857,9 +857,13 @@ describe('prepareData (entity handling) function tests', () => {
 
       const summary1 = getTestSummary({
         summaryId: 1,
+        added: 21,
+        removed: 0,
       });
       const summary2 = getTestSummary({
         summaryId: 2,
+        added: 21,
+        removed: 0,
       });
 
       const commit = getTestCommit({
@@ -870,30 +874,39 @@ describe('prepareData (entity handling) function tests', () => {
           1,
           2,
         ],
+        timestamp: 1000,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           commit,
         ],
         { sprintId: 1 },
       );
+      const receivedDiagramMinValue = parseInt(
+        slidesPreparedData[3].data.categories[3].valueText,
+        10,
+      );
 
-      expect(commitSummaries.get(commit.id)).toHaveLength(2);
-      expect(commitSummaries.get(commit.id)).toStrictEqual([2, 1]);
+      expect(receivedDiagramMinValue).toBe(1);
     });
 
-    test('save summary, if it is passed unrelated to commit', () => {
+    test('do not save summary, if it is passed unrelated to commit', () => {
       const sprint = getTestSprint({
         startAt: 0,
         finishAt: 604799999,
       });
 
-      const summary = getTestSummary();
-      const commit = getTestCommit();
+      const summary = getTestSummary({
+        added: 50,
+        removed: 25,
+      });
+      const commit = getTestCommit({
+        timestamp: 1000,
+      });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           summary,
@@ -901,11 +914,12 @@ describe('prepareData (entity handling) function tests', () => {
         ],
         { sprintId: 1 },
       );
+      const receivedDiagramMinValue = parseInt(
+        slidesPreparedData[3].data.categories[3].valueText,
+        10,
+      );
 
-      expect(commitSummaries.size).toBe(1);
-      expect(commitSummaries.get(commit.id)).toHaveLength(0);
-      expect(commits).toHaveLength(1);
-      expect(summaries.size).toBe(1);
+      expect(receivedDiagramMinValue).toBe(0);
     });
 
     test('save summary only one time if passed summaries with same id (without rewrite)', () => {
@@ -927,9 +941,10 @@ describe('prepareData (entity handling) function tests', () => {
 
       const commit = getTestCommit({
         summaries: [summary, summaryAgain],
+        timestamp: 1000,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           commit,
@@ -937,9 +952,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(summaries.size).toBe(1);
-      expect(summaries.get(summary.id).value).toBe(1500);
-      expect(commitSummaries.size).toBe(1);
+      expect(parseInt(slidesPreparedData[3].data.categories[0].valueText, 10)).toBe(1);
     });
   });
 
@@ -952,9 +965,11 @@ describe('prepareData (entity handling) function tests', () => {
 
       const commit1 = getTestCommit({
         commitId: 1,
+        timestamp: 1000,
       });
       const commit2 = getTestCommit({
         commitId: 2,
+        timestamp: 1000,
       });
 
       const project = getTestProject({
@@ -966,7 +981,7 @@ describe('prepareData (entity handling) function tests', () => {
         commits: [commit2],
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           project,
@@ -975,7 +990,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(commits).toHaveLength(1);
+      expect(slidesPreparedData[2].data.values[0].value).toBe(1);
     });
   });
 
@@ -1004,7 +1019,7 @@ describe('prepareData (entity handling) function tests', () => {
         resolvedByUser: user2,
       });
 
-      prepareData(
+      const slidesPreparedData = prepareData(
         [
           sprint,
           issue,
@@ -1013,7 +1028,7 @@ describe('prepareData (entity handling) function tests', () => {
         { sprintId: 1 },
       );
 
-      expect(users.size).toBe(1);
+      expect(slidesPreparedData[1].data.users).toHaveLength(1);
     });
   });
 });

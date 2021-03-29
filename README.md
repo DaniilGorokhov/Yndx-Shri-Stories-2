@@ -75,3 +75,6 @@ Uglify.js сильно уменьшает размер итоговой сбор
     ```
 
 3. Функция, также, доступна для импорта в стиле AMD.
+
+<!-- TODO rewrite README.md -> new storage for all data -->
+<!-- TODO in README.md write that uniqueness storage for resistance -->

@@ -1,23 +1,26 @@
-const { commits, commitSummaries, commitHandler } = require('../commitHandler');
+const { commitHandler } = require('../commitHandler');
 
 const { getTestCommit } = require('../../helpers/generators/getTestCommit');
 const { getTestUser } = require('../../helpers/generators/getTestUser');
 const { getTestSummary } = require('../../helpers/generators/getTestSummary');
 
+const commitsStorage = [];
+const commitSummariesStorage = new Map();
+
 afterEach(() => {
-  while (commits.length) commits.pop();
+  while (commitsStorage.length) commitsStorage.pop();
+
+  commitSummariesStorage.forEach((value, key) => {
+    commitSummariesStorage.delete(key);
+  });
 });
 
 describe('commitHandler function tests', () => {
-  test('save commits in array', () => {
-    expect(commits).toBeInstanceOf(Array);
-  });
-
   test('do not change passed object', () => {
     const commit = getTestCommit();
     const commitCopy = { ...commit };
 
-    commitHandler(commit);
+    commitHandler(commit, commitsStorage, commitSummariesStorage);
 
     expect(commit).toStrictEqual(commitCopy);
   });
@@ -26,10 +29,10 @@ describe('commitHandler function tests', () => {
     const now = Date.now();
     const commit = getTestCommit({ timestamp: now });
 
-    commitHandler(commit);
+    commitHandler(commit, commitsStorage, commitSummariesStorage);
 
-    expect(commits).toHaveLength(1);
-    expect(commits[0]).toStrictEqual({
+    expect(commitsStorage).toHaveLength(1);
+    expect(commitsStorage[0]).toStrictEqual({
       id: '11112222-3333-4444-5555-666677778888',
       author: 1,
       timestamp: now,
@@ -40,10 +43,10 @@ describe('commitHandler function tests', () => {
     const author = getTestUser();
     const commit = getTestCommit({ author });
 
-    commitHandler(commit);
+    commitHandler(commit, commitsStorage, commitSummariesStorage);
 
-    expect(commits).toHaveLength(1);
-    expect(commits[0].author).toBe(author.id);
+    expect(commitsStorage).toHaveLength(1);
+    expect(commitsStorage[0].author).toBe(author.id);
   });
 
   test('save all summaryId of summaries property of commit', () => {
@@ -64,10 +67,10 @@ describe('commitHandler function tests', () => {
       summaries: summariesToTest,
     });
 
-    commitHandler(commit);
+    commitHandler(commit, commitsStorage, commitSummariesStorage);
 
-    expect(commitSummaries.size).toBe(1);
-    expect(commitSummaries.get(commit.id)).toHaveLength(10);
-    expect(commitSummaries.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(commitSummariesStorage.size).toBe(1);
+    expect(commitSummariesStorage.get(commit.id)).toHaveLength(10);
+    expect(commitSummariesStorage.get(commit.id)).toStrictEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 });
