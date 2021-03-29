@@ -34,10 +34,8 @@ function prepareData(entities, { sprintId }) {
 
       const { type } = currentEntity;
       if (!uniqStorage.has(type, currentEntity.id)) {
-        const handledProperties = new Set();
-
         switch (type) {
-          case 'User': {
+          case 'User':
             userHandler(currentEntity);
 
             linkedListIns.handleProperty({
@@ -48,28 +46,16 @@ function prepareData(entities, { sprintId }) {
               linkedListIns.handleProperty({
                 property: 'comments',
               });
-
-              handledProperties.add('comments');
             }
 
             if (currentEntity.commits) {
               linkedListIns.handleProperty({
                 property: 'commits',
               });
-
-              handledProperties.add('commits');
-            }
-
-            const userHandledProperties = [
-              'id', 'type', 'name', 'login', 'avatar', 'friends',
-            ];
-            for (let ix = 0; ix < userHandledProperties.length; ix += 1) {
-              handledProperties.add(userHandledProperties[ix]);
             }
 
             break;
-          }
-          case 'Comment': {
+          case 'Comment':
             commentHandler(currentEntity);
 
             linkedListIns.handleProperty({
@@ -81,16 +67,8 @@ function prepareData(entities, { sprintId }) {
               property: 'likes',
             });
 
-            const commentHandledProperties = [
-              'id', 'type', 'author', 'message', 'likes', 'createdAt',
-            ];
-            for (let ix = 0; ix < commentHandledProperties.length; ix += 1) {
-              handledProperties.add(commentHandledProperties[ix]);
-            }
-
             break;
-          }
-          case 'Commit': {
+          case 'Commit':
             commitHandler(currentEntity);
 
             linkedListIns.handleProperty({
@@ -102,71 +80,35 @@ function prepareData(entities, { sprintId }) {
               property: 'summaries',
             });
 
-            const commitHandledProperties = [
-              'id', 'type', 'author', 'message', 'summaries', 'timestamp',
-            ];
-            for (let ix = 0; ix < commitHandledProperties.length; ix += 1) {
-              handledProperties.add(commitHandledProperties[ix]);
-            }
-
             break;
-          }
-          case 'Issue': {
+          case 'Issue':
             if (currentEntity.resolvedBy) {
               linkedListIns.handleProperty({
                 property: 'resolvedBy',
                 type: 'not array-like',
               });
-
-              handledProperties.add('resolvedBy');
             }
 
             linkedListIns.handleProperty({
               property: 'comments',
             });
 
-            const issueHandledProperties = [
-              'id', 'type', 'name', 'status', 'comments', 'createdAt',
-            ];
-            for (let ix = 0; ix < issueHandledProperties.length; ix += 1) {
-              handledProperties.add(issueHandledProperties[ix]);
-            }
-
             break;
-          }
-          case 'Summary': {
+          case 'Summary':
             summaryHandler(currentEntity);
 
             if (currentEntity.comments) {
               linkedListIns.handleProperty({
                 property: 'comments',
               });
-
-              handledProperties.add('comments');
-            }
-
-            const summaryHandledProperties = [
-              'id', 'type', 'path', 'added', 'removed',
-            ];
-            for (let ix = 0; ix < summaryHandledProperties.length; ix += 1) {
-              handledProperties.add(summaryHandledProperties[ix]);
             }
 
             break;
-          }
-          case 'Sprint': {
+          case 'Sprint':
             sprintHandler(currentEntity, sprintId);
 
-            const sprintHandledProperties = [
-              'id', 'type', 'name', 'startAt', 'finishedAt',
-            ];
-            for (let ix = 0; ix < sprintHandledProperties.length; ix += 1) {
-              handledProperties.add(sprintHandledProperties[ix]);
-            }
-
             break;
-          }
-          case 'Project': {
+          case 'Project':
             linkedListIns.handleProperty({
               property: 'dependencies',
             });
@@ -179,35 +121,9 @@ function prepareData(entities, { sprintId }) {
               property: 'commits',
             });
 
-            const projectHandledProperties = [
-              'id', 'type', 'name', 'dependencies', 'issues', 'commits',
-            ];
-            for (let ix = 0; ix < projectHandledProperties.length; ix += 1) {
-              handledProperties.add(projectHandledProperties[ix]);
-            }
-
             break;
-          }
           default:
             throw new Error('error: type of entity is invalid');
-        }
-
-        const keys = Object.keys(currentEntity);
-        for (let keyIx = 0; keyIx < keys.length; keyIx += 1) {
-          if (!handledProperties.has(keys[keyIx])) {
-            const key = keys[keyIx];
-
-            if (Array.isArray(currentEntity[key])) {
-              linkedListIns.handleProperty({
-                property: key,
-              });
-            } else if (typeof currentEntity[key] === 'object') {
-              linkedListIns.handleProperty({
-                property: key,
-                type: 'not array-like',
-              });
-            }
-          }
         }
 
         uniqStorage.add(type, currentEntity.id);

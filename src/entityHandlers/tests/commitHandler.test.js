@@ -46,17 +46,6 @@ describe('commitHandler function tests', () => {
     expect(commits[0].author).toBe(author.id);
   });
 
-  test('do not save commit, if its timestamp property value bigger than Date.now()', () => {
-    const biggerThanNow = Date.now() + 1000;
-    const commit = getTestCommit({
-      timestamp: biggerThanNow,
-    });
-
-    commitHandler(commit);
-
-    expect(commits).toHaveLength(0);
-  });
-
   test('save all summaryId of summaries property of commit', () => {
     const summariesToTest = [];
     for (let summaryId = 0; summaryId < 10; summaryId += 1) {

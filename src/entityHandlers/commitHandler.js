@@ -2,8 +2,6 @@ const commits = [];
 const commitSummaries = new Map();
 
 function commitHandler(commit) {
-  if (commit.timestamp > Date.now()) return;
-
   let authorId;
   if (typeof commit.author === 'object') {
     authorId = commit.author.id;
