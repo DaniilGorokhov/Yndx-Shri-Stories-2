@@ -1,3 +1,5 @@
+// This function generates statistics item.
+// This logic is taken out, since in future statistics item may extend.
 function getTestStatistics({
   min = 0,
   mid = 0,

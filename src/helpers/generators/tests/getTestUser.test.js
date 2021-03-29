@@ -54,20 +54,14 @@ describe('getTestUser function tests', () => {
     expect(user.name).toBe('Oleg');
   });
 
-  test('return user with selected friends quantity', () => {
-    const user = getTestUser({ friendsQuantity: 3 });
-
-    expect(user.friends).toHaveLength(3);
-  });
-
   test('returned user.friends are distinct users', () => {
-    const user = getTestUser({ friendsQuantity: 2 });
+    const user = getTestUser({ friendsIndexes: [1, 2] });
 
     expect(user.friends[0]).not.toStrictEqual(user.friends[1]);
   });
 
   test('return user.friends with selected friends id', () => {
-    const user = getTestUser({ friendsQuantity: 2, friendsIndexes: [6, 7] });
+    const user = getTestUser({ friendsIndexes: [6, 7] });
 
     expect(user.friends[0].id).toBe(6);
     expect(user.friends[1].id).toBe(7);
@@ -76,7 +70,6 @@ describe('getTestUser function tests', () => {
   test('return user.friends with user.id instead of entire user object '
    + 'if passed in friendsIndexes array object with property userAsId', () => {
     const user = getTestUser({
-      friendsQuantity: 2,
       friendsIndexes: [
         { id: 6, userAsId: true },
         { id: 7, userAsId: true },
@@ -90,7 +83,6 @@ describe('getTestUser function tests', () => {
   test('return user.friends with user.id instead of entire user object '
    + 'if passed in friendsIndexes array object only with property id', () => {
     const user = getTestUser({
-      friendsQuantity: 2,
       friendsIndexes: [
         { id: 6 },
         { id: 7 },

@@ -1,3 +1,4 @@
+// This module tests activity map for activity slide data
 const assert = require('assert').strict;
 
 const input = require('./input.json');

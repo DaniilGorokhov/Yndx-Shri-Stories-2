@@ -1,3 +1,4 @@
+// This function generates Map where by user.id are stored likes (likeItems).
 function getHandledTestLikes({
   userIds = [],
   likeItems = [],

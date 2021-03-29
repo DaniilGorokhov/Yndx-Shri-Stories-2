@@ -1,5 +1,24 @@
 const { getFormattedText } = require('../helpers/dataHandlers/getFormattedText');
 
+// config for getFormattedText function.
+const baseConfig = [
+  'коммит',
+  {
+    one: '',
+    twoFive: 'а',
+    other: 'ов',
+  },
+];
+
+// Local helper function.
+const getDifferenceValue = (value) => {
+  if (value > 0) {
+    return `+${value}`;
+  }
+  return value.toString();
+};
+
+// Return data in required view for diagram slide.
 function diagramPrepareData(
   activeStatistics,
   previousStatistics,
@@ -7,13 +26,6 @@ function diagramPrepareData(
   activeCommitsQuantity,
   previousCommitsQuantity,
 ) {
-  const getDifferenceValue = (value) => {
-    if (value > 0) {
-      return `+${value}`;
-    }
-    return value.toString();
-  };
-
   const totalText = getFormattedText(
     activeCommitsQuantity,
     'коммит',
@@ -26,14 +38,6 @@ function diagramPrepareData(
 
   const differenceTotalText = getDifferenceValue(activeCommitsQuantity - previousCommitsQuantity);
 
-  const baseConfig = [
-    'коммит',
-    {
-      one: '',
-      twoFive: 'а',
-      other: 'ов',
-    },
-  ];
   const categoriesData = [
     {
       valueText: getFormattedText(

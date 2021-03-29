@@ -1,3 +1,4 @@
+// This function generates Map<user.id, user>.
 function getHandledTestUsers({
   userIds = [],
 }) {

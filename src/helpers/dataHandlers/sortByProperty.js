@@ -1,3 +1,8 @@
+// This function sort objects in array by object[propertyForSort].
+// By default value of array item is parseFloat(object[propertyForSort]),
+// withParse argument can change this behavior (so we can compare strings).
+// If values of comparing objects equal, sort by object.id.
+// Function can sort in descending order.
 function sortByProperty({
   array,
   propertyForSort,
@@ -16,7 +21,6 @@ function sortByProperty({
     }
 
     if (value1 === value2) {
-      if (!withParse) return 0;
       if (descending) {
         return item1.id - item2.id;
       }

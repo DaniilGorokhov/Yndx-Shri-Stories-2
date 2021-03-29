@@ -1,6 +1,8 @@
 const commits = [];
+// Wire commit and summaries - Map<commit.id, summary.id[]>.
 const commitSummaries = new Map();
 
+// This function save commit with required properties and wire commit with summaries.
 function commitHandler(commit) {
   let authorId;
   if (typeof commit.author === 'object') {

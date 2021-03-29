@@ -1,6 +1,5 @@
-// TODO description for each function
-// return index of arrayItem, which is closest to value on the left side.
-// if there is not for value arrayItem on the left side, return -1.
+// Return index of arrayItem, which is closest to value (can be equal) on the left side.
+// If there is not for value arrayItem on the left side, return -1.
 function binarySearchStartByProperty({
   // array where we will search
   array,

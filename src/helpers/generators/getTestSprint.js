@@ -1,3 +1,4 @@
+// This function generates sprint entity with passed property values.
 function getTestSprint({
   sprintId = 1,
   active = false,

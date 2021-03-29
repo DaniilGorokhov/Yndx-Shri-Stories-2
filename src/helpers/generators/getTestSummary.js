@@ -1,3 +1,4 @@
+// This function generates summary entity with passed property values.
 function getTestSummary({
   summaryId = 1,
   path = `./testpath${summaryId}.js`,

@@ -1,5 +1,7 @@
+// Storage for likes -> Map<user.id, { timestamp, quantity }[]>.
 const likes = new Map();
 
+// This function collect likes, that are obtained by user.
 function commentHandler(comment) {
   let authorUserId;
   if (typeof comment.author === 'object') {

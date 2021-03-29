@@ -1,3 +1,4 @@
+// This function generates commit entity with passed property values.
 function getTestCommit({
   commitId = '11112222-3333-4444-5555-666677778888',
   author = 1,

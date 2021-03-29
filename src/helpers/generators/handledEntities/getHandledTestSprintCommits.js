@@ -1,5 +1,8 @@
 const { getHandledTestCommits } = require('./getHandledTestCommits');
 
+// This function generate array of object with sprint property as handled sprint entity
+// and commits property as array of commits, that are belong to this sprint.
+// By passing activeId we can specify active sprint (sprint, that property active will be true).
 function getHandledTestSprintCommits({
   sprintIds = [],
   activeId = null,

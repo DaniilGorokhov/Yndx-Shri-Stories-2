@@ -1,3 +1,6 @@
+// This function compute heat map (activity map) for activity slide data.
+// As input accepts commit[].
+// Return object, that can be used as data.data property in activity slide data.
 function computeHeatMap(activeCommits) {
   const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 

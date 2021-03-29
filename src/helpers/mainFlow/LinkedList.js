@@ -8,6 +8,7 @@ class LinkedList {
     this.entities = this.entities.next;
   }
 
+  // Append element in list.
   add(entity) {
     const newEntity = { data: entity, next: null };
     this.tail.next = newEntity;

@@ -1,3 +1,4 @@
+// This function generates handled commits with passed authorIds and timestamps.
 function getHandledTestCommits({
   commitIds = [],
   authorIds = [],

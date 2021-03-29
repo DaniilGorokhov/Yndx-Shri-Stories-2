@@ -1,10 +1,10 @@
-// Wire summaryId and summary entity.
+// Wire summaryId and summary entity -> Map<summary.id, summary>.
 const summaries = new Map();
 
 function summaryHandler(summary) {
   const handledSummary = {
     id: summary.id,
-    value: summary.added + summary.removed,
+    value: Math.abs(summary.added) + Math.abs(summary.removed),
   };
 
   summaries.set(handledSummary.id, handledSummary);

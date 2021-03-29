@@ -1,6 +1,8 @@
 const sprints = [];
+// Copy of sprint, that property active is true. Added for convenient.
 const activeSprint = {};
 
+// This function save sprint with required properties and save activeSprint in separate variable.
 function sprintHandler(sprint, activeSprintId) {
   if (typeof activeSprintId === 'undefined') {
     throw new Error('error: activeSprint argument did not pass; it is necessary argument');

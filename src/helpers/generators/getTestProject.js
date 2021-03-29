@@ -1,3 +1,5 @@
+// This function generates project entity with passed property values.
+// Function can generate dependencies internally.
 function getTestProject({
   projectId = '11112222-3333-4444-5555-666677778888',
   name = 'test project name',

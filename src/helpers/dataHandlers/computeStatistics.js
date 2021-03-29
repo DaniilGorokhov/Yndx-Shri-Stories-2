@@ -1,7 +1,7 @@
-// this function compute statistics data for sprints.
-// return array of statistics items - one by sprint.
+// This function compute statistics data for sprints.
+// Return array of statistics items - one by sprint.
 function computeStatistics({
-  // sprint here - array of its commits.
+  // Sprint here - array of its commits.
   sprints,
   commitSummaries,
   summaries,
