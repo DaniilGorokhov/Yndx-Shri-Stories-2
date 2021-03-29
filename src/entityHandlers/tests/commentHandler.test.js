@@ -91,5 +91,18 @@ describe('commentHandler function tests', () => {
       expect(likes.get(comment1.author)[0].quantity).toBe(2);
       expect(likes.get(comment1.author)[1].quantity).toBe(3);
     });
+
+    test('do not save comment, if its createdAt property value bigger than Date.now()', () => {
+      const biggerThanNow = Date.now() + 1000;
+      const comment = getTestComment({
+        author: 0,
+        createdAt: biggerThanNow,
+        likes: [1],
+      });
+
+      commentHandler(comment);
+
+      expect(likes.size).toBe(0);
+    });
   });
 });

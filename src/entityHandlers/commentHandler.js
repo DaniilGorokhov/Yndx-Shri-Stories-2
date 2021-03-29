@@ -1,6 +1,8 @@
 const likes = new Map();
 
 function commentHandler(comment) {
+  if (comment.createdAt > Date.now()) return;
+
   let authorUserId;
   if (typeof comment.author === 'object') {
     authorUserId = comment.author.id;
