@@ -3,7 +3,6 @@ const { binarySearchStartByProperty } = require('./binarySearchStartByProperty')
 // Return object with properties:
 // - sprintCommitsArray is array of objects (sprints) with property commits,
 // that contain all commits belong to it;
-// - sprintCommitsMap - Map, that wires sprint.id and commits from this sprint
 // - activeCommits is reference on sprint.commits, where sprint - active sprint;
 // - previousCommits is reference on sprint.commits,
 // where sprint - previous related to active sprint;
@@ -73,7 +72,6 @@ function sprintCommits(sprints, commits) {
 
   return {
     sprintCommitsArray,
-    sprintCommitsMap,
     activeCommits,
     previousCommits,
   };
