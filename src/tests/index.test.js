@@ -1,9 +1,4 @@
 const { prepareData } = require('../index');
-const { users } = require('../entityHandlers/userHandler');
-const { likes } = require('../entityHandlers/commentHandler');
-const { sprints, activeSprint } = require('../entityHandlers/sprintHandler');
-const { commits, commitSummaries } = require('../entityHandlers/commitHandler');
-const { summaries } = require('../entityHandlers/summaryHandler');
 
 const { getTestUser } = require('../helpers/generators/getTestUser');
 const { getTestComment } = require('../helpers/generators/getTestComment');
@@ -16,28 +11,6 @@ const { getTestProject } = require('../helpers/generators/getTestProject');
 const {
   getHandledTestUsersWithValues,
 } = require('../helpers/generators/handledEntities/getHandledTestUsersWithValues');
-
-afterEach(() => {
-  users.forEach((value, key) => {
-    users.delete(key);
-  });
-
-  likes.forEach((value, key) => {
-    likes.delete(key);
-  });
-
-  while (sprints.length) sprints.pop();
-  delete activeSprint.data;
-
-  while (commits.length) commits.pop();
-  commitSummaries.forEach((value, key) => {
-    commitSummaries.delete(key);
-  });
-
-  summaries.forEach((value, key) => {
-    summaries.delete(key);
-  });
-});
 
 describe('prepareData (slide data) function tests', () => {
   test('return right data for vote slide', () => {
@@ -364,10 +337,10 @@ describe('prepareData (slide data) function tests', () => {
 
     const expectedUsers = getHandledTestUsersWithValues({
       userIds: [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        0, 1, 2, 3, 4, 5, 6,
       ],
       valueTexts: [
-        '4', '4', '4', '3', '3', '2', '2', '0', '0', '0', '0',
+        '4', '4', '4', '3', '3', '2', '2',
       ],
     });
 
@@ -872,18 +845,13 @@ describe('prepareData (slide data) function tests', () => {
         ],
       });
 
-      const expectedUsersWithCommits = getHandledTestUsersWithValues({
-        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-        valueTexts: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-      });
-
       expect(slidesPreparedData[0]).toStrictEqual({
         alias: 'leaders',
         data: {
           title: 'Больше всего коммитов',
           subtitle: sprint.name,
           emoji: '👑',
-          users: expectedUsersWithCommits,
+          users: [],
         },
       });
       expect(slidesPreparedData[1]).toStrictEqual({
@@ -908,7 +876,7 @@ describe('prepareData (slide data) function tests', () => {
               active: true,
             },
           ],
-          users: expectedUsersWithCommits,
+          users: [],
         },
       });
     });
@@ -962,18 +930,13 @@ describe('prepareData (slide data) function tests', () => {
         ],
       });
 
-      const expectedUsersWithCommits = getHandledTestUsersWithValues({
-        userIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-        valueTexts: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-      });
-
       expect(slidesPreparedData[0]).toStrictEqual({
         alias: 'leaders',
         data: {
           title: 'Больше всего коммитов',
           subtitle: sprint.name,
           emoji: '👑',
-          users: expectedUsersWithCommits,
+          users: [],
         },
       });
       expect(slidesPreparedData[1]).toStrictEqual({
@@ -998,7 +961,7 @@ describe('prepareData (slide data) function tests', () => {
               active: true,
             },
           ],
-          users: expectedUsersWithCommits,
+          users: [],
         },
       });
     });

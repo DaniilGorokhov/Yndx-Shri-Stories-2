@@ -1,9 +1,5 @@
-const commits = [];
-// Wire commit and summaries - Map<commit.id, summary.id[]>.
-const commitSummaries = new Map();
-
 // This function save commit with required properties and wire commit with summaries.
-function commitHandler(commit) {
+function commitHandler(commit, commitsStorage, commitSummariesStorage) {
   let authorId;
   if (typeof commit.author === 'object') {
     authorId = commit.author.id;
@@ -17,7 +13,7 @@ function commitHandler(commit) {
     timestamp: commit.timestamp,
   };
 
-  commits.push(handledCommit);
+  commitsStorage.push(handledCommit);
 
   const currentCommitSummaries = [];
   const handledSummariesIds = new Set();
@@ -36,11 +32,9 @@ function commitHandler(commit) {
     }
   }
 
-  commitSummaries.set(commit.id, currentCommitSummaries);
+  commitSummariesStorage.set(commit.id, currentCommitSummaries);
 }
 
 module.exports = {
-  commits,
-  commitSummaries,
   commitHandler,
 };

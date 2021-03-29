@@ -1,15 +1,14 @@
-const {
-  sprints,
-  activeSprint,
-  sprintHandler,
-} = require('../sprintHandler');
+const { sprintHandler } = require('../sprintHandler');
 
 const { getTestSprint } = require('../../helpers/generators/getTestSprint');
 
-afterEach(() => {
-  while (sprints.length) sprints.pop();
+const sprintsStorage = [];
+const activeSprintStorage = {};
 
-  delete activeSprint.data;
+afterEach(() => {
+  while (sprintsStorage.length) sprintsStorage.pop();
+
+  delete activeSprintStorage.data;
 });
 
 describe('sprintHandler function tests', () => {
@@ -25,10 +24,10 @@ describe('sprintHandler function tests', () => {
     const now = Date.now();
     const sprint = getTestSprint({ startAt: now, finishAt: now + 1000 });
 
-    sprintHandler(sprint, sprint.id + 1);
+    sprintHandler(sprint, sprint.id + 1, sprintsStorage, activeSprintStorage);
 
-    expect(sprints).toHaveLength(1);
-    expect(sprints[0]).toStrictEqual({
+    expect(sprintsStorage).toHaveLength(1);
+    expect(sprintsStorage[0]).toStrictEqual({
       id: 1,
       name: 'test sprint name1',
       startAt: now,
@@ -39,34 +38,34 @@ describe('sprintHandler function tests', () => {
   test('add active property with value true if sprint.id is activeSprintId', () => {
     const sprint = getTestSprint();
 
-    sprintHandler(sprint, sprint.id);
+    sprintHandler(sprint, sprint.id, sprintsStorage, activeSprintStorage);
 
-    expect(sprints).toHaveLength(1);
-    expect(sprints[0]).toHaveProperty('active', true);
+    expect(sprintsStorage).toHaveLength(1);
+    expect(sprintsStorage[0]).toHaveProperty('active', true);
   });
 
   test('do not add active property if sprint.id is nor activeSprintIx', () => {
     const sprint = getTestSprint();
 
-    sprintHandler(sprint, sprint.id + 1);
+    sprintHandler(sprint, sprint.id + 1, sprintsStorage, activeSprintStorage);
 
-    expect(sprints).toHaveLength(1);
-    expect(sprints[0]).not.toHaveProperty('active');
+    expect(sprintsStorage).toHaveLength(1);
+    expect(sprintsStorage[0]).not.toHaveProperty('active');
   });
 
   test('save copy of active sprint in exported variable activeSprint '
     + 'in property data as reference to object', () => {
     const sprint = getTestSprint();
 
-    sprintHandler(sprint, sprint.id);
+    sprintHandler(sprint, sprint.id, sprintsStorage, activeSprintStorage);
 
-    expect(activeSprint.data).toStrictEqual({
+    expect(activeSprintStorage.data).toStrictEqual({
       id: sprint.id,
       name: sprint.name,
       startAt: sprint.startAt,
       finishAt: sprint.finishAt,
       active: true,
     });
-    expect(activeSprint.data).toBe(sprints[0]);
+    expect(activeSprintStorage.data).toBe(sprintsStorage[0]);
   });
 });

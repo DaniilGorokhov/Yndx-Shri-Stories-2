@@ -12,16 +12,18 @@ function userCommits(users, activeCommits) {
   const userCommitsArray = [];
 
   users.forEach((user, userId) => {
-    const commitsQuantity = userCommitsMap.get(userId) || 0;
+    const commitsQuantity = userCommitsMap.get(userId);
 
-    const handledUser = {
-      id: user.id,
-      name: user.name,
-      avatar: user.avatar,
-      valueText: commitsQuantity.toString(),
-    };
+    if (commitsQuantity) {
+      const handledUser = {
+        id: user.id,
+        name: user.name,
+        avatar: user.avatar,
+        valueText: commitsQuantity.toString(),
+      };
 
-    userCommitsArray.push(handledUser);
+      userCommitsArray.push(handledUser);
+    }
   });
 
   return userCommitsArray;

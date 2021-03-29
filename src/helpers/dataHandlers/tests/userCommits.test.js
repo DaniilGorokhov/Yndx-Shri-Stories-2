@@ -47,9 +47,7 @@ describe('userCommits function tests', () => {
 
     const userCommitsArray = userCommits(usersToTest, commitsToTest);
 
-    expect(userCommitsArray).toHaveLength(2);
-    expect(userCommitsArray[0].valueText).toBe('0');
-    expect(userCommitsArray[1].valueText).toBe('0');
+    expect(userCommitsArray).toHaveLength(0);
   });
 
   test('return data with right counted commits per user', () => {

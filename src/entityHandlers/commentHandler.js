@@ -1,8 +1,5 @@
-// Storage for likes -> Map<user.id, { timestamp, quantity }[]>.
-const likes = new Map();
-
 // This function collect likes, that are obtained by user.
-function commentHandler(comment) {
+function commentHandler(comment, likesStorage) {
   let authorUserId;
   if (typeof comment.author === 'object') {
     authorUserId = comment.author.id;
@@ -15,15 +12,14 @@ function commentHandler(comment) {
     quantity: comment.likes.length,
   };
 
-  const userLikes = likes.get(authorUserId);
+  const userLikes = likesStorage.get(authorUserId);
   if (typeof userLikes !== 'undefined') {
     userLikes.push(newLikesItem);
   } else {
-    likes.set(authorUserId, [newLikesItem]);
+    likesStorage.set(authorUserId, [newLikesItem]);
   }
 }
 
 module.exports = {
-  likes,
   commentHandler,
 };
