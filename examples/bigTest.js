@@ -1,3 +1,7 @@
+// This module is big test for prepareData function.
+// Function from source is tested.
+// As input is used input.json; expected output - output.json;
+// received output save in output.dev.json; outputs are compared by assert.deepStrictEqual
 const fs = require('fs');
 const assert = require('assert').strict;
 

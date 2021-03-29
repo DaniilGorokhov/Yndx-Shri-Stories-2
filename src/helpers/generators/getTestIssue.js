@@ -1,5 +1,6 @@
+// This function generates issue entity with passed property values.
 function getTestIssue({
-  issueId = '5fb693b5dd6774076443b29a', // 24 symbols
+  issueId = '5fb693b5dd6774076443b29a',
   status = 'open', // can be 'open' | 'inProgress' | 'closed'
   comments = [],
   resolvedBy = false,

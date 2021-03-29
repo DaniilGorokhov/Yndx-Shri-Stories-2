@@ -1,5 +1,7 @@
+// Storage for users -> Map<user.id, user>.
 const users = new Map();
 
+// This function add user in storage only with required properties.
 function userHandler(user) {
   const handledUser = {
     id: user.id,

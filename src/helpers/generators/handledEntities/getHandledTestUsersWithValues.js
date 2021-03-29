@@ -1,3 +1,4 @@
+// This function generates array of users with passed valueText property.
 function getHandledTestUsersWithValues({
   userIds = [],
   valueTexts = [],

@@ -1,3 +1,4 @@
+// This module collect information about entities in input.json with data types
 const entities = require('./input.json');
 
 const types = new Map();

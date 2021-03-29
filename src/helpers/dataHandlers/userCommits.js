@@ -1,4 +1,4 @@
-// this function wire users and their commits during active sprint
+// This function wire users and their commits during active sprint.
 function userCommits(users, activeCommits) {
   const userCommitsMap = new Map();
 

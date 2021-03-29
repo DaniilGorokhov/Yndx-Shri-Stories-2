@@ -1,3 +1,4 @@
+// Return data in required view for leaders slide.
 function leadersPrepareData(userCommitsArray, { name }) {
   const leadersSlideData = {
     alias: 'leaders',

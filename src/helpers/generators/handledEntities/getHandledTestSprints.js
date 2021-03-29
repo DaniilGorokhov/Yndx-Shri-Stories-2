@@ -1,3 +1,6 @@
+// This function generates array of handled sprint entities with passed timestamps and ids.
+// We can specify active sprint by passing activeIx argument - sprint,
+// that active property will be true.
 function getHandledTestSprints({
   sprintIds = [],
   activeId = null,

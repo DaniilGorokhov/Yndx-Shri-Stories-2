@@ -1,7 +1,8 @@
+// This function generates user entity with passed property values.
+// Function can generate friends internally.
 function getTestUser({
   userId = 1,
   name = `test username${userId}`,
-  friendsQuantity = 0,
   friendsIndexes = [],
   comments = false,
   commentsItems = [],
@@ -9,7 +10,7 @@ function getTestUser({
   commitsItems = [],
 } = {}) {
   const friends = [];
-  for (let friendIx = 0; friendIx < friendsQuantity; friendIx += 1) {
+  for (let friendIx = 0; friendIx < friendsIndexes.length; friendIx += 1) {
     let newUser;
 
     if (typeof friendsIndexes[friendIx] === 'object' && friendsIndexes[friendIx].userAsId) {

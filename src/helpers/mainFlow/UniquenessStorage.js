@@ -11,8 +11,7 @@ class UniquenessStorage {
     }
   }
 
-  // Return true if storage[type] has not id,
-  // else return false.
+  // Return true if storage[type] has not id, else return false.
   // Adding will be only if it is returned true.
   add(type, id) {
     if (this.typesSet.has(type)) {
@@ -26,8 +25,7 @@ class UniquenessStorage {
     return false;
   }
 
-  // Return false if type does not exist or if storage has not passed id,
-  // else return true.
+  // Return false if type does not exist or if storage has not passed id, else return true.
   has(type, id) {
     if (this.typesSet.has(type)) {
       return this.storage[type].has(id);

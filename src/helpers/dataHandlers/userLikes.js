@@ -1,6 +1,6 @@
 const { getFormattedText } = require('./getFormattedText');
 
-// this function wire user and they likes in active sprint
+// This function wire user and its likes amount during active sprint.
 function userLikes(users, likes, { startAt, finishAt }) {
   const userLikesArray = [];
 

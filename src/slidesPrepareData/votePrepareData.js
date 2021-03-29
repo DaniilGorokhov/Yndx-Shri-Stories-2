@@ -1,3 +1,4 @@
+// Return data in required view for vote slide.
 function votePrepareData(userLikesArray, { name }) {
   const preparedData = {
     alias: 'vote',

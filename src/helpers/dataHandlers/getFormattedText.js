@@ -1,4 +1,4 @@
-// this function return formatted string by template:
+// This function return formatted string by template:
 // `${votesQuantity} ${word}${rightEndOfWord}`.
 // valueHandler is function for handling value, that handle after compute rightEndOfWord
 function getFormattedText(value, word, endsOfWord, { valueHandler = null } = {}) {

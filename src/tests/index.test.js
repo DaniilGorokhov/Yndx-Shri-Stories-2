@@ -105,7 +105,6 @@ describe('prepareData (slide data) function tests', () => {
       } else if (userId === 0) {
         user = getTestUser({
           userId,
-          friendsQuantity: 2,
           friendsIndexes: [18, 19, { id: 20, userAsId: true }],
         });
       } else {
@@ -484,7 +483,6 @@ describe('prepareData (slide data) function tests', () => {
       } else {
         user = getTestUser({
           userId,
-          friendsQuantity: 2,
           friendsIndexes: [8, 9],
         });
       }

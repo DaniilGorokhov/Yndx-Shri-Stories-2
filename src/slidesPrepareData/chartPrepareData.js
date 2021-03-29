@@ -1,4 +1,4 @@
-// this function prepare data for chart slide
+// Return data in required view for chart slide.
 function chartPrepareData(sprintCommitsArray, userCommitsArray, { name }) {
   const values = [];
 
